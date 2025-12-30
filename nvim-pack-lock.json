@@ -28,6 +28,10 @@
       "rev": "a899e3e33c6c26ffeda5739fb6e7157cfc21ad6f",
       "src": "https://github.com/ibhagwan/fzf-lua"
     },
+    "kanban.nvim": {
+      "rev": "e6c9e96c0fcfd1086533178b28d9da7b73493a1f",
+      "src": "https://github.com/viniciusteixeiradias/kanban.nvim"
+    },
     "lualine.nvim": {
       "rev": "47f91c416daef12db467145e16bed5bbfe00add8",
       "src": "https://github.com/nvim-lualine/lualine.nvim"
