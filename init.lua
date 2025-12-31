@@ -325,7 +325,7 @@ require("blink.cmp").setup({
 	completion = {
 		documentation = { auto_show = true, auto_show_delay_ms = 250 },
 		menu = {
-			auto_show = true,
+			auto_show = false,
 			draw = {
 				treesitter = { "lsp" },
 				columns = { { "kind_icon", "label", "label_description", gap = 1 }, { "kind" } },
@@ -500,27 +500,78 @@ vim.api.nvim_create_autocmd("LspAttach", {
 -- KEYBINDINGS
 -- ============================================================================
 local opts = { noremap = true, silent = true }
+local opencode = require("opencode")
 
+local function toggle_opencode()
+	opencode.toggle()
+end
+
+local function ask_about_code()
+	opencode.ask("@cursor: ")
+end
+
+local function ask_about_selection()
+	opencode.ask("@selection: ")
+end
+
+local function add_buffer_to_prompt()
+	opencode.prompt("@buffer", { append = true })
+end
+
+local function add_selection_to_prompt()
+	opencode.prompt("@selection", { append = true })
+end
+
+local function explain_code()
+	opencode.prompt("Explain @cursor and its context")
+end
+
+local function new_session()
+	opencode.command("session_new")
+end
+
+local function scroll_up()
+	opencode.command("messages_half_page_up")
+end
+
+local function scroll_down()
+	opencode.command("messages_half_page_down")
+end
+
+local function select_prompt()
+	opencode.select()
+end
+
+local function toggle_lazygit()
+	lazygit:toggle()
+end
+
+local function toggle_thoth()
+	thoth:toggle()
+end
+
+local function toggle_flow_tracker()
+	flow_tracker:toggle()
+end
+
+local function toggle_opencode_terminal()
+	opencode:toggle()
+end
 -- === File Management ===
 vim.keymap.set({ "n", "i" }, "<leader>s", "<Esc><cmd>w<CR>", { desc = "Save file" })
 vim.keymap.set("n", "<leader>q", ":wqall<CR>", { desc = "Quit all" })
 vim.keymap.set("n", "<leader>r", "<cmd>checktime<CR>", { desc = "Refresh file" })
-
 -- === Search & Navigation ===
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
-
 -- === Line Navigation ===
 vim.keymap.set({ "n", "i" }, "<leader>a", "<Esc>^i<Esc>", { desc = "Beginning of line" })
 vim.keymap.set({ "n", "i" }, "<leader>e", "<End>", { desc = "End of line" })
-
 -- === Jump List Navigation ===
 vim.keymap.set("n", "<M-left>", "g;", { desc = "Older cursor position" })
 vim.keymap.set("n", "<M-right>", "g,", { desc = "Newer cursor position" })
-
 -- === Buffer Navigation ===
 vim.keymap.set("n", "<M-S-left>", "<Esc>:bprevious<Esc>", { desc = "Previous buffer" })
 vim.keymap.set("n", "<M-S-right>", "<Esc>:bnext<Esc>", { desc = "Next buffer" })
-
 -- === Window Management ===
 vim.keymap.set("n", "<leader>g<left>", "<C-w><C-h>", { desc = "Focus left" })
 vim.keymap.set("n", "<leader>g<down>", "<C-w><C-j>", { desc = "Focus down" })
@@ -530,37 +581,20 @@ vim.keymap.set("n", "<leader>Sv", ":vsplit<CR>", { desc = "Vertical split" })
 vim.keymap.set("n", "<leader>Sh", ":split<CR>", { desc = "Horizontal split" })
 vim.keymap.set("n", "<leader>Sc", "<cmd>close<CR>", { desc = "Close split" })
 vim.keymap.set("n", "<leader>So", "<cmd>only<CR>", { desc = "Only this split" })
-
 -- === Text Editing ===
 vim.keymap.set("n", "<M-down>", ":m .+1<CR>==", { desc = "Move line down" })
 vim.keymap.set("n", "<M-up>", ":m .-2<CR>==", { desc = "Move line up" })
-
 -- === Terminal ===
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 vim.keymap.set("n", "<leader>t", ":ToggleTerm direction=float<CR>", opts)
-
 -- === Terminal Apps ===
-vim.keymap.set("n", "<leader>G", function()
-	lazygit:toggle()
-end, { desc = "Lazygit" })
-
-vim.keymap.set("n", "<leader>T", function()
-	thoth:toggle()
-end, { desc = "Thoth" })
-
-vim.keymap.set("n", "<leader>H", function()
-	flow_tracker:toggle()
-end, { desc = "Flow Tracker" })
-
-vim.keymap.set("n", "<leader>O", function()
-	opencode:toggle()
-end, { desc = "OpenCode Terminal" })
-
+vim.keymap.set("n", "<leader>G", toggle_lazygit, { desc = "Lazygit" })
+vim.keymap.set("n", "<leader>T", toggle_thoth, { desc = "Thoth" })
+vim.keymap.set("n", "<leader>H", toggle_flow_tracker, { desc = "Flow Tracker" })
+vim.keymap.set("n", "<leader>O", toggle_opencode_terminal, { desc = "OpenCode Terminal" })
 -- === Fzf-lua (Fuzzy Finder) ===
 vim.keymap.set("n", "<leader>ff", fzf.files, { desc = "Find files" })
-vim.keymap.set("n", "<leader>fF", function()
-	fzf.global()
-end, { desc = "Find files (cwd)" })
+vim.keymap.set("n", "<leader>fF", fzf.files, { desc = "Find files (cwd)" })
 vim.keymap.set("n", "<leader>fG", fzf.live_grep, { desc = "Live grep" })
 vim.keymap.set("n", "<leader>fb", fzf.buffers, { desc = "Buffers" })
 vim.keymap.set("n", "<leader>fr", fzf.lsp_references, { desc = "LSP references" })
@@ -576,48 +610,17 @@ vim.keymap.set("n", "<leader>fA", ":FzfLua lsp_code_actions<CR>", { desc = "Code
 vim.keymap.set("n", "<leader>fgs", fzf.git_status, { desc = "Git status" })
 vim.keymap.set("n", "<leader>fgc", fzf.git_commits, { desc = "Git commits" })
 vim.keymap.set("n", "<leader>fC", fzf.commands, { desc = "Commands" })
-
 -- === OpenCode (AI Assistant) ===
-vim.keymap.set("n", "<leader>ot", function()
-	require("opencode").toggle()
-end, { desc = "Toggle OpenCode" })
-
-vim.keymap.set("n", "<leader>oa", function()
-	require("opencode").ask("@cursor: ")
-end, { desc = "Ask about code" })
-
-vim.keymap.set("v", "<leader>oa", function()
-	require("opencode").ask("@selection: ")
-end, { desc = "Ask about selection" })
-
-vim.keymap.set("n", "<leader>o+", function()
-	require("opencode").prompt("@buffer", { append = true })
-end, { desc = "Add buffer to prompt" })
-
-vim.keymap.set("v", "<leader>o+", function()
-	require("opencode").prompt("@selection", { append = true })
-end, { desc = "Add selection to prompt" })
-
-vim.keymap.set("n", "<leader>oe", function()
-	require("opencode").prompt("Explain @cursor and its context")
-end, { desc = "Explain code" })
-
-vim.keymap.set("n", "<leader>on", function()
-	require("opencode").command("session_new")
-end, { desc = "New session" })
-
-vim.keymap.set("n", "<S-C-u>", function()
-	require("opencode").command("messages_half_page_up")
-end, { desc = "Scroll up" })
-
-vim.keymap.set("n", "<S-C-d>", function()
-	require("opencode").command("messages_half_page_down")
-end, { desc = "Scroll down" })
-
-vim.keymap.set({ "n", "v" }, "<leader>os", function()
-	require("opencode").select()
-end, { desc = "Select prompt" })
-
+vim.keymap.set("n", "<leader>ot", toggle_opencode, { desc = "Toggle OpenCode" })
+vim.keymap.set("n", "<leader>oa", ask_about_code, { desc = "Ask about code" })
+vim.keymap.set("v", "<leader>oa", ask_about_selection, { desc = "Ask about selection" })
+vim.keymap.set("n", "<leader>o+", add_buffer_to_prompt, { desc = "Add buffer to prompt" })
+vim.keymap.set("v", "<leader>o+", add_selection_to_prompt, { desc = "Add selection to prompt" })
+vim.keymap.set("n", "<leader>oe", explain_code, { desc = "Explain code" })
+vim.keymap.set("n", "<leader>on", new_session, { desc = "New session" })
+vim.keymap.set("n", "<S-C-u>", scroll_up, { desc = "Scroll up" })
+vim.keymap.set("n", "<S-C-d>", scroll_down, { desc = "Scroll down" })
+vim.keymap.set({ "n", "v" }, "<leader>os", select_prompt, { desc = "Select prompt" })
 -- === Tools & Utilities ===
 vim.keymap.set("n", "-", "<cmd>Oil<cr>", { desc = "Oil file explorer" })
 vim.keymap.set("n", "<leader>M", "<cmd>Mason<CR>", { desc = "Mason" })
