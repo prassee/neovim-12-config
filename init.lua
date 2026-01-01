@@ -7,6 +7,7 @@
 -- -----------------------------------------------------------------------------
 vim.g.mapleader = "\\"
 vim.g.have_nerd_font = true
+vim.g.copilot_no_tab_map = true -- Disable default Copilot tab mapping
 
 -- -----------------------------------------------------------------------------
 -- Disable Built-in Completion (use blink.cmp instead)
@@ -141,7 +142,7 @@ vim.pack.add({
 -- UI Plugins
 -- -----------------------------------------------------------------------------
 vim.pack.add({
-	{ "https://github.com/catppuccin/nvim", name = "catppuccin" },
+	"https://github.com/catppuccin/nvim",
 	"https://github.com/nvim-lualine/lualine.nvim",
 })
 
@@ -161,6 +162,7 @@ vim.pack.add({
 	"https://github.com/akinsho/toggleterm.nvim",
 	"https://github.com/viniciusteixeiradias/kanban.nvim",
 	"https://github.com/NickvanDyke/opencode.nvim",
+	"https://github.com/github/copilot.vim",
 	"https://github.com/numToStr/Comment.nvim",
 })
 
@@ -356,9 +358,7 @@ vim.lsp.config("marksman", {
 -- -----------------------------------------------------------------------------
 -- Completion (blink.cmp)
 -- -----------------------------------------------------------------------------
--- Disable Neovim's built-in completion
-vim.opt.completeopt = {}
-vim.g.loaded_netrwPlugin = 1
+vim.opt.completeopt = {} -- Disable Neovim's built-in completion menu
 
 require("blink.cmp").setup({
 	keymap = {
@@ -506,6 +506,14 @@ require("kanban").setup({
 -- -----------------------------------------------------------------------------
 -- OpenCode (AI Assistant)
 -- -----------------------------------------------------------------------------
+vim.g.opencode_opts = {
+	provider = {
+		enabled = "terminal",
+		terminal = {
+			split = "right",
+		},
+	},
+}
 local opencode = require("opencode")
 
 -- =============================================================================
@@ -539,8 +547,10 @@ vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 -- -----------------------------------------------------------------------------
 -- General: Line Navigation
 -- -----------------------------------------------------------------------------
-vim.keymap.set({ "n", "i" }, "<leader>a", "<Esc>^i<Esc>", { desc = "Go to beginning of line" })
-vim.keymap.set({ "n", "i" }, "<leader>e", "<End>", { desc = "Go to end of line" })
+vim.keymap.set("n", "<leader>a", "^", { desc = "Go to beginning of line" })
+vim.keymap.set("n", "<leader>e", "$", { desc = "Go to end of line" })
+vim.keymap.set("i", "<C-a>", "<C-o>^", { desc = "Go to beginning of line" })
+vim.keymap.set("i", "<C-e>", "<End>", { desc = "Go to end of line" })
 
 -- -----------------------------------------------------------------------------
 -- General: Jumplist Navigation
@@ -576,7 +586,7 @@ vim.keymap.set("n", "<M-up>", ":m .-2<CR>==", { desc = "Move line up" })
 -- General: Clipboard
 -- -----------------------------------------------------------------------------
 vim.keymap.set("n", "<leader>y", "<cmd>%y+<CR>", { desc = "Yank entire buffer to system clipboard" })
-vim.keymap.set({ "n", "v", "i" }, "<C-a>", "<Esc>ggVG", { desc = "Select all text" })
+vim.keymap.set({ "n", "v" }, "<C-a>", "<Esc>ggVG", { desc = "Select all text" })
 
 -- -----------------------------------------------------------------------------
 -- Plugin: Oil (File Explorer)
@@ -587,9 +597,6 @@ vim.keymap.set("n", "-", "<cmd>Oil<cr>", { desc = "Oil File Explorer" })
 -- Plugin: fzf-lua (Fuzzy Finder)
 -- -----------------------------------------------------------------------------
 vim.keymap.set("n", "<leader>ff", fzf.files, { desc = "Find files" })
-vim.keymap.set("n", "<leader>fF", function()
-	require("fzf-lua").global()
-end, { desc = "Find files (cwd)" })
 vim.keymap.set("n", "<leader>fG", fzf.live_grep, { desc = "Grep" })
 vim.keymap.set("n", "<leader>fb", fzf.buffers, { desc = "Buffers" })
 vim.keymap.set("n", "<leader>fh", fzf.help_tags, { desc = "Help Tags" })
@@ -601,12 +608,11 @@ vim.keymap.set("n", "<leader>fC", fzf.commands, { desc = "Commands" })
 vim.keymap.set("n", "<leader>fr", fzf.lsp_references, { desc = "LSP References" })
 vim.keymap.set("n", "<leader>fD", fzf.lsp_definitions, { desc = "LSP Definitions" })
 vim.keymap.set("n", "<leader>fca", fzf.lsp_code_actions, { desc = "LSP Code Actions" })
-vim.keymap.set("n", "<leader>fA", ":FzfLua lsp_code_actions<CR>", { desc = "LSP Code Actions" })
 vim.keymap.set("n", "<leader>fs", fzf.lsp_document_symbols, { desc = "LSP Document Symbols" })
 vim.keymap.set("n", "<leader>fw", fzf.lsp_workspace_symbols, { desc = "LSP Workspace Symbols" })
 vim.keymap.set("n", "<leader>fR", vim.lsp.buf.rename, { desc = "LSP rename" })
-vim.keymap.set("n", "<leader>fdd", ":FzfLua lsp_document_diagnostics<CR>", { desc = "LSP Document Diagnostics" })
-vim.keymap.set("n", "<leader>fwd", ":FzfLua lsp_workspace_diagnostics<CR>", { desc = "LSP Workspace Diagnostics" })
+vim.keymap.set("n", "<leader>fdd", fzf.diagnostics_document, { desc = "LSP Document Diagnostics" })
+vim.keymap.set("n", "<leader>fwd", fzf.diagnostics_workspace, { desc = "LSP Workspace Diagnostics" })
 
 -- -----------------------------------------------------------------------------
 -- Plugin: fzf-lua (Git Integration)
@@ -690,7 +696,12 @@ vim.keymap.set("n", "<S-C-d>", scroll_down, { desc = "Scroll down" })
 vim.keymap.set({ "n", "v" }, "<leader>os", select_prompt, { desc = "Select prompt" })
 
 -- -----------------------------------------------------------------------------
--- Plugin: Mason & Plugins
+-- Plugin: Mason & Pack
 -- -----------------------------------------------------------------------------
 vim.keymap.set("n", "<leader>M", "<cmd>Mason<CR>", { desc = "Open Mason Window" })
 vim.keymap.set("n", "<leader>L", "<cmd>lua vim.pack.update()<CR>", { desc = "Update Plugins" })
+
+-- -----------------------------------------------------------------------------
+-- Plugin: Copilot
+-- -----------------------------------------------------------------------------
+vim.keymap.set("i", "<S-Tab>", 'copilot#Accept("\\<S-Tab>")', { expr = true, replace_keycodes = false })
