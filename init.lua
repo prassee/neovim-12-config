@@ -66,9 +66,9 @@ vim.opt.splitbelow = true
 vim.opt.undofile = true
 
 -- -----------------------------------------------------------------------------
--- Syntax (Treesitter-only highlighting)
+-- Syntax
 -- -----------------------------------------------------------------------------
-vim.cmd("syntax off")
+-- Keep Vim syntax enabled as fallback when Treesitter parser unavailable
 
 -- -----------------------------------------------------------------------------
 -- Diagnostics
@@ -164,6 +164,7 @@ vim.pack.add({
 	"https://github.com/NickvanDyke/opencode.nvim",
 	"https://github.com/github/copilot.vim",
 	"https://github.com/numToStr/Comment.nvim",
+	"https://github.com/lewis6991/gitsigns.nvim",
 })
 
 -- =============================================================================
@@ -178,6 +179,7 @@ vim.cmd.colorscheme("catppuccin")
 -- -----------------------------------------------------------------------------
 -- Treesitter
 -- -----------------------------------------------------------------------------
+-- Enable treesitter highlighting when parser is available, fallback to vim syntax
 vim.api.nvim_create_autocmd("FileType", {
 	callback = function()
 		pcall(vim.treesitter.start)
@@ -195,10 +197,12 @@ require("mason-tool-installer").setup({
 		"stylua",
 		"pyrefly",
 		"gopls",
+		"yaml-language-server",
+		"prettier",
 	},
 })
 
-vim.lsp.enable({ "lua_ls", "gopls", "pyrefly", "dockerls", "taplo", "jsonls", "marksman" })
+vim.lsp.enable({ "lua_ls", "gopls", "pyrefly", "dockerls", "taplo", "jsonls", "marksman", "yamlls" })
 vim.lsp.inlay_hint.enable(true)
 
 -- -----------------------------------------------------------------------------
@@ -355,6 +359,23 @@ vim.lsp.config("marksman", {
 	single_file_support = true,
 })
 
+vim.lsp.config("yamlls", {
+	cmd = { "yaml-language-server", "--stdio" },
+	filetypes = { "yaml", "yaml.docker-compose", "yaml.gitlab" },
+	root_markers = { ".git" },
+	single_file_support = true,
+	settings = {
+		yaml = {
+			schemas = require("schemastore").yaml.schemas(),
+			validate = true,
+			schemaStore = {
+				enable = false, -- Disable built-in schemaStore to use schemastore.nvim
+				url = "",
+			},
+		},
+	},
+})
+
 -- -----------------------------------------------------------------------------
 -- Completion (blink.cmp)
 -- -----------------------------------------------------------------------------
@@ -408,6 +429,7 @@ require("conform").setup({
 		htmldjango = { "djlint" },
 		html = { "djlint" },
 		javascript = { "prettier" },
+		yaml = { "prettier" },
 	},
 })
 
@@ -483,6 +505,25 @@ require("toggleterm").setup({
 local Terminal = require("toggleterm.terminal").Terminal
 local lazygit = Terminal:new({ cmd = "lazygit", direction = "float", hidden = true })
 local thoth = Terminal:new({ cmd = "thoth", direction = "float", hidden = true })
+
+-- -----------------------------------------------------------------------------
+-- Git Signs (gitsigns.nvim)
+-- -----------------------------------------------------------------------------
+require("gitsigns").setup({
+	current_line_blame = false, -- Toggle with :Gitsigns toggle_current_line_blame
+	current_line_blame_opts = {
+		virt_text = true,
+		virt_text_pos = "eol",
+		delay = 300,
+	},
+	signs = {
+		add = { text = "+" },
+		change = { text = "~" },
+		delete = { text = "_" },
+		topdelete = { text = "-" },
+		changedelete = { text = "~" },
+	},
+})
 
 -- -----------------------------------------------------------------------------
 -- Kanban
@@ -619,6 +660,18 @@ vim.keymap.set("n", "<leader>fwd", fzf.diagnostics_workspace, { desc = "LSP Work
 -- -----------------------------------------------------------------------------
 vim.keymap.set("n", "<leader>fgs", fzf.git_status, { desc = "Git Status" })
 vim.keymap.set("n", "<leader>fgc", fzf.git_commits, { desc = "Git Commits" })
+
+-- -----------------------------------------------------------------------------
+-- Plugin: Gitsigns (Git Blame / Hunks)
+-- -----------------------------------------------------------------------------
+vim.keymap.set("n", "<leader>hb", "<cmd>Gitsigns toggle_current_line_blame<CR>", { desc = "Toggle Git Blame" })
+vim.keymap.set("n", "<leader>hB", "<cmd>Gitsigns blame<CR>", { desc = "Git Blame Buffer" })
+vim.keymap.set("n", "<leader>hp", "<cmd>Gitsigns preview_hunk<CR>", { desc = "Preview Hunk" })
+vim.keymap.set("n", "<leader>hr", "<cmd>Gitsigns reset_hunk<CR>", { desc = "Reset Hunk" })
+vim.keymap.set("n", "<leader>hR", "<cmd>Gitsigns reset_buffer<CR>", { desc = "Reset Buffer" })
+vim.keymap.set("n", "<leader>hd", "<cmd>Gitsigns diffthis<CR>", { desc = "Diff This" })
+vim.keymap.set("n", "]h", "<cmd>Gitsigns next_hunk<CR>", { desc = "Next Hunk" })
+vim.keymap.set("n", "[h", "<cmd>Gitsigns prev_hunk<CR>", { desc = "Previous Hunk" })
 
 -- -----------------------------------------------------------------------------
 -- Plugin: ToggleTerm (Terminal)
