@@ -1,33 +1,36 @@
+-- =============================================================================
+-- LEADER & GLOBALS
+-- =============================================================================
 vim.g.mapleader = "\\"
 vim.g.have_nerd_font = true
+vim.g.completion_enabled = false
 
--- options
--- Relative and absolute line numbers combined
+-- =============================================================================
+-- OPTIONS
+-- =============================================================================
+-- Line numbers
 vim.opt.number = true
 vim.opt.relativenumber = false
 
--- Keep signcolumn on by default
+-- UI
 vim.opt.signcolumn = "yes"
-
--- Cursorline
 vim.opt.cursorline = true
+vim.opt.winborder = "rounded"
 
--- Show whitespace characters
+-- Whitespace characters
 vim.opt.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 
 -- Search
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
-
--- Preview substitutions
 vim.opt.inccommand = "split"
 
 -- Text wrapping
 vim.opt.wrap = true
 vim.opt.breakindent = true
 
--- Tabstops
+-- Tabs & indentation
 vim.opt.expandtab = true
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
@@ -37,13 +40,12 @@ vim.opt.shiftwidth = 2
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 
--- Save undo history
+-- Persistence
 vim.opt.undofile = true
 
--- Set the default border for all floating windows
-vim.opt.winborder = "rounded"
-vim.g.completion_enabled = false
-
+-- =============================================================================
+-- PLUGINS (vim.pack)
+-- =============================================================================
 vim.api.nvim_create_user_command("Pack", function(opts)
 	local cmd = opts.fargs[1]
 	if cmd == "update" then
@@ -58,24 +60,65 @@ end, {
 	end,
 })
 
+-- Core plugins
 vim.pack.add({
 	"https://github.com/nvim-treesitter/nvim-treesitter",
 	"https://github.com/neovim/nvim-lspconfig",
-	"https://github.com/stevearc/oil.nvim",
-	"https://github.com/nvim-mini/mini.pick",
-	"https://github.com/nvim-mini/mini.clue",
 	"https://github.com/Saghen/blink.cmp",
+	"https://github.com/L3MON4D3/LuaSnip",
+	"https://github.com/rafamadriz/friendly-snippets",
+	"https://github.com/nvim-mini/mini.clue",
+})
+
+-- LSP & Mason
+vim.pack.add({
 	"https://github.com/mason-org/mason.nvim",
 	"https://github.com/mason-org/mason-lspconfig.nvim",
 	"https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
-	"https://github.com/L3MON4D3/LuaSnip",
-	"https://github.com/rafamadriz/friendly-snippets",
-})
-
-vim.pack.add({
 	{ src = "https://github.com/b0o/SchemaStore.nvim" },
 })
 
+-- UI plugins
+vim.pack.add({
+	{ src = "https://github.com/catppuccin/nvim.git", name = "catppuccin" },
+	{ src = "https://github.com/nvim-lualine/lualine.nvim" },
+})
+
+-- File & search
+vim.pack.add({
+	"https://github.com/stevearc/oil.nvim",
+	{ src = "https://github.com/ibhagwan/fzf-lua" },
+})
+
+-- Tools
+vim.pack.add({
+	{ src = "https://github.com/stevearc/conform.nvim" },
+	{ src = "https://github.com/akinsho/toggleterm.nvim" },
+	{ src = "https://github.com/viniciusteixeiradias/kanban.nvim" },
+	{ src = "https://github.com/NickvanDyke/opencode.nvim" },
+	{ src = "https://github.com/numToStr/Comment.nvim" },
+})
+
+-- =============================================================================
+-- COLORSCHEME
+-- =============================================================================
+vim.cmd.colorscheme("catppuccin")
+
+-- =============================================================================
+-- TREESITTER
+-- =============================================================================
+vim.cmd("syntax off") -- Only highlight with treesitter
+
+vim.api.nvim_create_autocmd("FileType", {
+	callback = function()
+		pcall(vim.treesitter.start)
+	end,
+})
+
+-- =============================================================================
+-- LSP CONFIGURATION
+-- =============================================================================
+-- Mason setup
 require("mason").setup()
 require("mason-lspconfig").setup()
 require("mason-tool-installer").setup({
@@ -87,27 +130,15 @@ require("mason-tool-installer").setup({
 	},
 })
 
--- disable mouse popup yet keep mouse enabled
---vim.cmd [[
---  aunmenu PopUp
---  autocmd! nvim.popupmenu
--- ]]
-
--- Only highlight with treesitter
-vim.cmd("syntax off")
-
-require("oil").setup({
-	keymaps = { ["`"] = "actions.tcd" },
-	columns = { "size", "mtime" },
-	delete_to_trash = true,
-	skip_confirm_for_simple_edits = true,
-})
-
+-- Enable LSP servers
 vim.lsp.enable({ "pyrefly", "lua_ls", "gopls", "dockerls" })
 vim.lsp.inlay_hint.enable(true)
 
+-- Diagnostics
 vim.diagnostic.config({
-	virtual_lines = true,
+	virtual_lines = {
+		current_line = true,
+	},
 	underline = true,
 	update_in_insert = false,
 	severity_sort = true,
@@ -126,18 +157,31 @@ vim.diagnostic.config({
 	},
 })
 
-vim.lsp.config("dockerls", {
-	cmd = { "docker-langserver", "--stdio" },
-	filetypes = { "dockerfile" },
-	root_markers = { "Dockerfile", "Containerfile", ".git" },
-	single_file_support = true,
+-- LSP server configs
+vim.lsp.config("lua_ls", {
+	cmd = { "lua-language-server" },
+	filetypes = { "lua" },
+	root_markers = { { ".luarc.json", ".luarc.jsonc" }, ".git" },
+	settings = {
+		Lua = {
+			workspace = {
+				library = vim.api.nvim_get_runtime_file("", true),
+			},
+			runtime = {
+				version = "LuaJIT",
+			},
+			diagnostics = {
+				globals = { "vim" },
+			},
+		},
+	},
 })
 
 vim.lsp.config("gopls", {
-	cmd = { "gopls" }, -- Command to start the language server
-	filetypes = { "go", "gomod", "gowork", "gotmpl", "gosum" }, -- File types that this server will handle
-	root_markers = { "go.mod", "go.work", ".git" }, -- Markers to identify the root of the project
-	settings = { -- Settings for the language server
+	cmd = { "gopls" },
+	filetypes = { "go", "gomod", "gowork", "gotmpl", "gosum" },
+	root_markers = { "go.mod", "go.work", ".git" },
+	settings = {
 		gopls = {
 			gofumpt = true,
 			codelenses = {
@@ -231,6 +275,13 @@ vim.lsp.config("gopls", {
 	},
 })
 
+vim.lsp.config("dockerls", {
+	cmd = { "docker-langserver", "--stdio" },
+	filetypes = { "dockerfile" },
+	root_markers = { "Dockerfile", "Containerfile", ".git" },
+	single_file_support = true,
+})
+
 vim.lsp.config("taplo", {
 	cmd = { "taplo", "lsp", "stdio" },
 	filetypes = { "toml" },
@@ -258,35 +309,9 @@ vim.lsp.config("marksman", {
 	single_file_support = true,
 })
 
-vim.lsp.config("lua_ls", {
-	cmd = { "lua-language-server" },
-
-	-- Filetypes to automatically attach to.
-	filetypes = { "lua" },
-
-	-- Sets the "root directory" to the parent directory of the file in the
-	-- current buffer that contains either a ".luarc.json" or a
-	-- ".luarc.jsonc" file. Files that share a root directory will reuse
-	-- the connection to the same LSP server.
-	-- Nested lists indicate equal priority, see |vim.lsp.Config|.
-	root_markers = { { ".luarc.json", ".luarc.jsonc" }, ".git" },
-	settings = {
-		Lua = {
-			workspace = {
-				library = vim.api.nvim_get_runtime_file("", true),
-			},
-			runtime = {
-				version = "LuaJIT",
-			},
-			diagnostics = {
-				-- Get the language server to recognize the `vim` global
-				globals = { "vim" },
-			},
-		},
-	},
-})
-
--- require("luasnip.loaders.from_vscode").lazy_load()
+-- =============================================================================
+-- COMPLETION (blink.cmp)
+-- =============================================================================
 require("blink.cmp").setup({
 	keymap = {
 		["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
@@ -296,7 +321,6 @@ require("blink.cmp").setup({
 		["<PageUp>"] = { "scroll_documentation_up", "fallback" },
 		["<PageDown>"] = { "scroll_documentation_down", "fallback" },
 	},
-	-- sources = { "lsp", "path", "snippets", "buffer" },
 	signature = { enabled = true },
 	fuzzy = { implementation = "lua" },
 	completion = {
@@ -311,96 +335,18 @@ require("blink.cmp").setup({
 	},
 })
 
--- Autocommands
+-- =============================================================================
+-- BLOCK Comment
+-- =============================================================================
+require("Comment").setup()
 
--- highlight while yanking
-vim.api.nvim_create_autocmd("TextYankPost", {
-	desc = "Highlight when yanking (copying) text",
-	group = vim.api.nvim_create_augroup("highlight-yank", { clear = true }),
-	callback = function()
-		vim.highlight.on_yank()
-	end,
-})
-
-vim.api.nvim_create_autocmd("FileType", {
-	callback = function()
-		pcall(vim.treesitter.start)
-	end,
-})
-
-vim.api.nvim_create_autocmd("LspAttach", {
-	callback = function(ev)
-		local client = vim.lsp.get_client_by_id(ev.data.client_id)
-		if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_completion) then
-			vim.opt.completeopt = { "menu", "menuone", "noselect" }
-			vim.lsp.completion.enable(false, client.id, ev.buf)
-			vim.keymap.set("i", "<C-Space>", function()
-				vim.lsp.completion.get()
-			end)
-		end
-	end,
-})
-
--- Diagnostics
-vim.diagnostic.config({
-	-- Use the default configuration
-	-- virtual_lines = true
-
-	-- Alternatively, customize specific options
-	virtual_lines = {
-		-- Only show virtual line diagnostics for the current cursor line
-		current_line = true,
-	},
-})
-
-require("mini.pick").setup()
-require("mini.clue").setup({
-	triggers = {
-		-- Leader triggers
-		{ mode = "n", keys = "<Leader>" },
-		{ mode = "x", keys = "<Leader>" },
-		-- Built-in completion
-		{ mode = "i", keys = "<C-x>" },
-
-		-- `g` key
-		{ mode = "n", keys = "g" },
-		{ mode = "x", keys = "g" },
-
-		-- Marks
-		{ mode = "n", keys = "'" },
-		{ mode = "n", keys = "`" },
-		{ mode = "x", keys = "'" },
-		{ mode = "x", keys = "`" },
-
-		-- Registers
-		{ mode = "n", keys = '"' },
-		{ mode = "x", keys = '"' },
-		{ mode = "i", keys = "<C-r>" },
-		{ mode = "c", keys = "<C-r>" },
-
-		-- Window commands
-		{ mode = "n", keys = "<C-w>" },
-
-		-- `z` key
-		{ mode = "n", keys = "z" },
-		{ mode = "x", keys = "z" },
-	},
-})
-vim.keymap.set("n", "<leader>ff", ":Pick files<CR>")
-
-vim.pack.add({
-	{ src = "https://github.com/catppuccin/nvim.git", name = "catppuccin" },
-})
-vim.cmd.colorscheme("catppuccin")
-
---: conform
-vim.pack.add({
-	{ src = "https://github.com/stevearc/conform.nvim" },
-})
+-- =============================================================================
+-- FORMATTING (conform.nvim)
+-- =============================================================================
 require("conform").setup({
 	format_on_save = {
 		timeout_ms = 500,
-		lsp_fallback = true,
+		lsp_format = "fallback",
 	},
 	formatters_by_ft = {
 		lua = { "stylua" },
@@ -414,15 +360,58 @@ require("conform").setup({
 	},
 })
 
---: lualine
-vim.pack.add({
-	{ src = "https://github.com/nvim-lualine/lualine.nvim" },
+-- =============================================================================
+-- FILE EXPLORER (oil.nvim)
+-- =============================================================================
+require("oil").setup({
+	keymaps = { ["`"] = "actions.tcd" },
+	columns = { "size", "mtime" },
+	delete_to_trash = true,
+	skip_confirm_for_simple_edits = true,
 })
+
+vim.keymap.set("n", "-", "<cmd>Oil<cr>", { desc = "Oil File Explorer" })
+
+-- =============================================================================
+-- FUZZY FINDER (fzf-lua)
+-- =============================================================================
+local fzf = require("fzf-lua")
+fzf.setup({
+	files = {
+		cmd = "git ls-files --cached --others --exclude-standard 2>/dev/null || rg --files --hidden --glob '!/.git/*'",
+	},
+})
+fzf.register_ui_select()
+
+-- fzf-lua keymaps
+vim.keymap.set("n", "<leader>ff", fzf.files, { desc = "Find files" })
+vim.keymap.set("n", "<leader>fF", function()
+	require("fzf-lua").global()
+end, { desc = "Find files (cwd)" })
+vim.keymap.set("n", "<leader>fG", fzf.live_grep, { desc = "Grep" })
+vim.keymap.set("n", "<leader>fb", fzf.buffers, { desc = "Buffers" })
+vim.keymap.set("n", "<leader>fh", fzf.help_tags, { desc = "Help Tags" })
+vim.keymap.set("n", "<leader>fC", fzf.commands, { desc = "Commands" })
+-- LSP
+vim.keymap.set("n", "<leader>fr", fzf.lsp_references, { desc = "LSP References" })
+vim.keymap.set("n", "<leader>fD", fzf.lsp_definitions, { desc = "LSP Definitions" })
+vim.keymap.set("n", "<leader>fca", fzf.lsp_code_actions, { desc = "LSP Code Actions" })
+vim.keymap.set("n", "<leader>fA", ":FzfLua lsp_code_actions<CR>", { desc = "LSP Code Actions" })
+vim.keymap.set("n", "<leader>fs", fzf.lsp_document_symbols, { desc = "LSP Document Symbols" })
+vim.keymap.set("n", "<leader>fw", fzf.lsp_workspace_symbols, { desc = "LSP Workspace Symbols" })
+vim.keymap.set("n", "<leader>fR", vim.lsp.buf.rename, { desc = "LSP rename" })
+vim.keymap.set("n", "<leader>fdd", ":FzfLua lsp_document_diagnostics<CR>", { desc = "LSP Document Diagnostics" })
+vim.keymap.set("n", "<leader>fwd", ":FzfLua lsp_workspace_diagnostics<CR>", { desc = "LSP Workspace Diagnostics" })
+-- Git
+vim.keymap.set("n", "<leader>fgs", fzf.git_status, { desc = "Git Status" })
+vim.keymap.set("n", "<leader>fgc", fzf.git_commits, { desc = "Git Commits" })
+
+-- =============================================================================
+-- STATUSLINE (lualine)
+-- =============================================================================
 require("lualine").setup({
 	options = {
 		theme = "auto",
-		-- component_separators = { left = "", right = "" },
-		-- section_separators = { left = "", right = "" },
 	},
 	sections = {
 		lualine_a = { "mode" },
@@ -433,56 +422,71 @@ require("lualine").setup({
 		lualine_z = { "location" },
 	},
 })
---:
 
---:
--- Toggle Terminal
-vim.pack.add({
-	{
-		src = "https://github.com/akinsho/toggleterm.nvim",
+-- =============================================================================
+-- WHICH-KEY HINTS (mini.clue)
+-- =============================================================================
+require("mini.clue").setup({
+	triggers = {
+		{ mode = "n", keys = "<Leader>" },
+		{ mode = "x", keys = "<Leader>" },
+		{ mode = "i", keys = "<C-x>" },
+		{ mode = "n", keys = "g" },
+		{ mode = "x", keys = "g" },
+		{ mode = "n", keys = "'" },
+		{ mode = "n", keys = "`" },
+		{ mode = "x", keys = "'" },
+		{ mode = "x", keys = "`" },
+		{ mode = "n", keys = '"' },
+		{ mode = "x", keys = '"' },
+		{ mode = "i", keys = "<C-r>" },
+		{ mode = "c", keys = "<C-r>" },
+		{ mode = "n", keys = "<C-w>" },
+		{ mode = "n", keys = "z" },
+		{ mode = "x", keys = "z" },
 	},
 })
 
+-- =============================================================================
+-- TERMINAL (toggleterm)
+-- =============================================================================
 require("toggleterm").setup({
 	shade_terminals = true,
 })
 
 local Terminal = require("toggleterm.terminal").Terminal
 local lazygit = Terminal:new({ cmd = "lazygit", direction = "float", hidden = true })
-local opencode = Terminal:new({ cmd = "opencode", direction = "float", hidden = true })
+local opencode_term = Terminal:new({ cmd = "opencode", direction = "float", hidden = true })
 local thoth = Terminal:new({ cmd = "thoth", direction = "float", hidden = true })
 local flow_tracker = Terminal:new({ cmd = "flow_state", direction = "float", hidden = true })
 
--- 4. Keybindings
-local opts = { noremap = true, silent = true }
-
+vim.keymap.set(
+	"n",
+	"<leader>t",
+	":ToggleTerm direction=float<CR>",
+	{ noremap = true, silent = true, desc = "Toggle Terminal" }
+)
 vim.keymap.set("n", "<leader>G", function()
 	lazygit:toggle()
-end, { desc = "Lazygit", unpack(opts) })
-
+end, { desc = "Lazygit", noremap = true, silent = true })
 vim.keymap.set("n", "<leader>T", function()
 	thoth:toggle()
-end, { desc = "Thoth", unpack(opts) })
-
+end, { desc = "Thoth", noremap = true, silent = true })
 vim.keymap.set("n", "<leader>H", function()
 	flow_tracker:toggle()
-end, { desc = "Flow Tracker", unpack(opts) })
-
+end, { desc = "Flow Tracker", noremap = true, silent = true })
 vim.keymap.set("n", "<leader>O", function()
-	opencode:toggle()
-end, { desc = "OpenCode", unpack(opts) })
+	opencode_term:toggle()
+end, { desc = "OpenCode Terminal", noremap = true, silent = true })
+vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
-vim.keymap.set("n", "<leader>t", ":ToggleTerm direction=float<CR>", opts)
---:
-
---:
-vim.pack.add({
-	{ src = "https://github.com/viniciusteixeiradias/kanban.nvim" },
-})
+-- =============================================================================
+-- KANBAN
+-- =============================================================================
 require("kanban").setup({
 	file = {
-		path = nil, -- Custom path (nil = auto-detect)
-		name = "TODO.md", -- Default filename
+		path = nil,
+		name = "TODO.md",
 		create_if_missing = true,
 	},
 	default_columns = { "Backlog", "In Progress", "Done" },
@@ -499,51 +503,13 @@ require("kanban").setup({
 		task_done = { strikethrough = true, fg = "#666666" },
 		separator = { fg = "#444444" },
 	},
-	auto_refresh_buffers = true, -- Refresh open markdown buffers on changes
-	on_complete_move_to = "Done", -- Target column when checked (nil to disable)
+	auto_refresh_buffers = true,
+	on_complete_move_to = "Done",
 })
---:
 
---: Fzf lua
-vim.pack.add({
-	{ src = "https://github.com/ibhagwan/fzf-lua" },
-})
-local fzf = require("fzf-lua")
-fzf.setup({
-	files = {
-		cmd = "git ls-files --cached --others --exclude-standard 2>/dev/null || rg --files --hidden --glob '!/.git/*'",
-	},
-})
-fzf.register_ui_select()
-vim.keymap.set("n", "<leader>ff", fzf.files, { desc = "Find files" })
-vim.keymap.set("n", "<leader>fF", function()
-	require("fzf-lua").global()
-end, { desc = "Find files (cwd)" })
-vim.keymap.set("n", "<leader>fG", fzf.live_grep, { desc = "Grep" })
-vim.keymap.set("n", "<leader>fb", fzf.buffers, { desc = "Buffers" })
-vim.keymap.set("n", "<leader>fr", fzf.lsp_references, { desc = "LSP References" })
-vim.keymap.set("n", "<leader>fD", fzf.lsp_definitions, { desc = "LSP Definitions" })
-vim.keymap.set("n", "<leader>fca", fzf.lsp_code_actions, { desc = "LSP Code Actions" })
-vim.keymap.set("n", "<leader>fs", fzf.lsp_document_symbols, { desc = "LSP Document Symbols" })
-vim.keymap.set("n", "<leader>fw", fzf.lsp_workspace_symbols, { desc = "LSP Workspace Symbols" })
-vim.keymap.set("n", "<leader>fh", fzf.help_tags, { desc = "Help Tags" })
-vim.keymap.set("n", "<leader>fR", vim.lsp.buf.rename, { desc = "LSP rename" })
--- show workspace diagnostics
-vim.keymap.set("n", "<leader>fdd", ":FzfLua lsp_document_diagnostics<CR>", { desc = "LSP Workspace Diagnostics" })
-vim.keymap.set("n", "<leader>fwd", ":FzfLua lsp_workspace_diagnostics<CR>", { desc = "LSP Workspace Diagnostics" })
-
-vim.keymap.set("n", "<leader>fA", ":FzfLua lsp_code_actions<CR>", { desc = "LSP Code Actions" })
--- configure keymap to open fzf-lua's git status
-vim.keymap.set("n", "<leader>fgs", fzf.git_status, { desc = "Git Status" })
-vim.keymap.set("n", "<leader>fgc", fzf.git_commits, { desc = "Git Commits" })
--- keymap to list all commands
-vim.keymap.set("n", "<leader>fC", fzf.commands, { desc = "Commands" })
---:
-
---: OpenCode
-vim.pack.add({
-	{ src = "https://github.com/NickvanDyke/opencode.nvim" },
-})
+-- =============================================================================
+-- OPENCODE (AI Assistant)
+-- =============================================================================
 vim.keymap.set("n", "<leader>ot", function()
 	require("opencode").toggle()
 end, { desc = "Toggle embedded" })
@@ -575,10 +541,20 @@ vim.keymap.set({ "n", "v" }, "<leader>os", function()
 	require("opencode").select()
 end, { desc = "Select prompt" })
 
---:
+-- =============================================================================
+-- AUTOCOMMANDS
+-- =============================================================================
+vim.api.nvim_create_autocmd("TextYankPost", {
+	desc = "Highlight when yanking (copying) text",
+	group = vim.api.nvim_create_augroup("highlight-yank", { clear = true }),
+	callback = function()
+		vim.highlight.on_yank()
+	end,
+})
 
---:
--- Keymaps
+-- =============================================================================
+-- KEYMAPS (General)
+-- =============================================================================
 -- Saving and Quitting
 vim.keymap.set({ "n", "i" }, "<leader>s", "<Esc><cmd>w<CR>", { desc = "Save" })
 vim.keymap.set("n", "<leader>q", ":wqall<CR>", { desc = "Quit" })
@@ -586,6 +562,7 @@ vim.keymap.set("n", "<leader>r", "<cmd>checktime<CR>", { desc = "Refresh file if
 
 -- Search
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
+
 -- Navigation: Lines
 vim.keymap.set({ "n", "i" }, "<leader>a", "<Esc>^i<Esc>", { desc = "Go to beginning of line" })
 vim.keymap.set({ "n", "i" }, "<leader>e", "<End>", { desc = "Go to end of line" })
@@ -609,17 +586,13 @@ vim.keymap.set("n", "<leader>Sc", "<cmd>close<CR>", { desc = "Close Split" })
 vim.keymap.set("n", "<leader>So", "<cmd>only<CR>", { desc = "Keep Only This Split" })
 
 -- Editing: Move Lines
-vim.keymap.set("n", "<M-down>", ":m .+1<CR>==", { desc = "Move line up" }) -- move line up(n)
-vim.keymap.set("n", "<M-up>", ":m .-2<CR>==", { desc = "Move line down" }) -- move line down(n)
+vim.keymap.set("n", "<M-down>", ":m .+1<CR>==", { desc = "Move line down" })
+vim.keymap.set("n", "<M-up>", ":m .-2<CR>==", { desc = "Move line up" })
 
--- Terminal
-vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
-
--- Tools / Plugins
-vim.keymap.set("n", "-", "<cmd>Oil<cr>", { desc = "Oil File Explorer" })
-vim.keymap.set("n", "<leader>M", "<cmd>Mason<CR>", { desc = "Open [M]ason Window" })
-vim.keymap.set("n", "<leader>L", "<cmd>lua vim.pack.update()<CR>", { desc = "Open [L]azy" })
+-- Clipboard
 vim.keymap.set("n", "<leader>y", "<cmd>%y+<CR>", { desc = "Yank entire buffer to system clipboard" })
 vim.keymap.set({ "n", "v", "i" }, "<C-a>", "<Esc>ggVG", { desc = "Select all text" })
---:
---
+
+-- Tools / Plugins
+vim.keymap.set("n", "<leader>M", "<cmd>Mason<CR>", { desc = "Open Mason Window" })
+vim.keymap.set("n", "<leader>L", "<cmd>lua vim.pack.update()<CR>", { desc = "Update Plugins" })
