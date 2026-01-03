@@ -166,6 +166,7 @@ vim.pack.add({
 	"https://github.com/github/copilot.vim",
 	"https://github.com/numToStr/Comment.nvim",
 	"https://github.com/lewis6991/gitsigns.nvim",
+	"https://github.com/chomosuke/typst-preview.nvim",
 })
 
 -- =============================================================================
@@ -493,7 +494,6 @@ require("mini.clue").setup({
 		{ mode = "i", keys = "<C-x>" },
 		{ mode = "n", keys = "g" },
 		{ mode = "x", keys = "g" },
-		{ mode = "v", keys = "gs" },
 		{ mode = "n", keys = "'" },
 		{ mode = "n", keys = "`" },
 		{ mode = "x", keys = "'" },
@@ -508,14 +508,19 @@ require("mini.clue").setup({
 	},
 	clues = {
 		-- Surround hints
-		{ mode = "v", keys = "gsa", desc = "Add surrounding" },
-		{ mode = "v", keys = "gsd", desc = "Delete surrounding" },
-		{ mode = "v", keys = "gsr", desc = "Replace surrounding" },
-		{ mode = "v", keys = "gsf", desc = "Find surrounding (right)" },
-		{ mode = "v", keys = "gsF", desc = "Find surrounding (left)" },
-		{ mode = "v", keys = "gsh", desc = "Highlight surrounding" },
+		{ mode = "n", keys = "gsa", desc = "Add surrounding" },
+		{ mode = "n", keys = "gsd", desc = "Delete surrounding" },
+		{ mode = "n", keys = "gsr", desc = "Replace surrounding" },
+		{ mode = "n", keys = "gsf", desc = "Find surrounding (right)" },
+		{ mode = "n", keys = "gsF", desc = "Find surrounding (left)" },
+		{ mode = "n", keys = "gsh", desc = "Highlight surrounding" },
 		{ mode = "n", keys = "gsn", desc = "Update n_lines" },
 		{ mode = "x", keys = "gsa", desc = "Add surrounding" },
+		-- Typst Preview hints
+		{ mode = "n", keys = "<Leader>pt", desc = "+Typst Preview" },
+		{ mode = "n", keys = "<Leader>ptp", desc = "Typst preview" },
+		{ mode = "n", keys = "<Leader>pts", desc = "Typst preview stop" },
+		{ mode = "n", keys = "<Leader>ptt", desc = "Typst preview toggle" },
 	},
 })
 
@@ -582,6 +587,15 @@ require("kanban").setup({
 	},
 	auto_refresh_buffers = true,
 	on_complete_move_to = "Done",
+})
+
+-- -----------------------------------------------------------------------------
+-- Typst Preview
+-- -----------------------------------------------------------------------------
+require("typst-preview").setup({
+	dependencies_bin = {
+		["tinymist"] = "tinymist", -- Use Mason-installed tinymist
+	},
 })
 
 -- -----------------------------------------------------------------------------
@@ -823,6 +837,10 @@ vim.keymap.set("n", "<C-S-d>", scroll_down, { desc = "OpenCode scroll down" })
 vim.keymap.set("n", "<leader>pm", "<cmd>Mason<CR>", { desc = "Mason" })
 vim.keymap.set("n", "<leader>pu", "<cmd>lua vim.pack.update()<CR>", { desc = "Update plugins" })
 vim.keymap.set("n", "<leader>pk", "<cmd>Kanban<CR>", { desc = "Kanban board" })
+-- Typst Preview
+vim.keymap.set("n", "<leader>ptp", "<cmd>TypstPreview<CR>", { desc = "Typst preview" })
+vim.keymap.set("n", "<leader>pts", "<cmd>TypstPreviewStop<CR>", { desc = "Typst preview stop" })
+vim.keymap.set("n", "<leader>ptt", "<cmd>TypstPreviewToggle<CR>", { desc = "Typst preview toggle" })
 
 -- -----------------------------------------------------------------------------
 -- File Explorer: Oil
