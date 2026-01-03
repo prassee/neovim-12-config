@@ -5,7 +5,7 @@
 -- -----------------------------------------------------------------------------
 -- Leader & Global Variables
 -- -----------------------------------------------------------------------------
-vim.g.mapleader = "\\"
+vim.g.mapleader = " "
 vim.g.have_nerd_font = true
 vim.g.copilot_no_tab_map = true -- Disable default Copilot tab mapping
 
@@ -199,10 +199,11 @@ require("mason-tool-installer").setup({
 		"gopls",
 		"yaml-language-server",
 		"prettier",
+		"tinymist",
 	},
 })
 
-vim.lsp.enable({ "lua_ls", "gopls", "pyrefly", "dockerls", "taplo", "jsonls", "marksman", "yamlls" })
+vim.lsp.enable({ "lua_ls", "gopls", "pyrefly", "dockerls", "taplo", "jsonls", "marksman", "yamlls", "tinymist" })
 vim.lsp.inlay_hint.enable(true)
 
 -- -----------------------------------------------------------------------------
@@ -373,6 +374,16 @@ vim.lsp.config("yamlls", {
 				url = "",
 			},
 		},
+	},
+})
+
+vim.lsp.config("tinymist", {
+	cmd = { "tinymist" },
+	filetypes = { "typst" },
+	root_markers = { ".git", "main.typ" },
+	single_file_support = true,
+	settings = {
+		formatterMode = "typstfmt",
 	},
 })
 
@@ -572,109 +583,141 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 -- =============================================================================
 -- SECTION 5: KEYMAPS
 -- =============================================================================
+-- Keymap Prefix Reference:
+--   <leader>b  = Buffers
+--   <leader>f  = Find (fzf-lua search)
+--   <leader>g  = Git (gitsigns + fzf git)
+--   <leader>l  = LSP actions
+--   <leader>o  = OpenCode AI
+--   <leader>p  = Plugins (Mason, Pack, Kanban)
+--   <leader>t  = Terminal / Tools
+--   <leader>w  = Window management
 
 -- -----------------------------------------------------------------------------
 -- General: Saving & Quitting
 -- -----------------------------------------------------------------------------
 vim.keymap.set({ "n", "i" }, "<leader>s", "<Esc><cmd>w<CR>", { desc = "Save" })
-vim.keymap.set("n", "<leader>q", ":wqall<CR>", { desc = "Quit" })
-vim.keymap.set("n", "<leader>r", "<cmd>checktime<CR>", { desc = "Refresh file if modified outside" })
+vim.keymap.set("n", "<leader>q", ":wqall<CR>", { desc = "Quit all" })
+vim.keymap.set("n", "<leader>S", "<cmd>source %<CR>", { desc = "Source current file" })
+vim.keymap.set("n", "<leader>Q", ":qall!<CR>", { desc = "Force quit all" })
+vim.keymap.set("n", "<leader>r", "<cmd>checktime<CR>", { desc = "Refresh file" })
 
 -- -----------------------------------------------------------------------------
 -- General: Search
 -- -----------------------------------------------------------------------------
-vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
+vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 
 -- -----------------------------------------------------------------------------
 -- General: Line Navigation
 -- -----------------------------------------------------------------------------
-vim.keymap.set("n", "<leader>a", "^", { desc = "Go to beginning of line" })
-vim.keymap.set("n", "<leader>e", "$", { desc = "Go to end of line" })
-vim.keymap.set("i", "<C-a>", "<C-o>^", { desc = "Go to beginning of line" })
-vim.keymap.set("i", "<C-e>", "<End>", { desc = "Go to end of line" })
+vim.keymap.set("n", "<leader>a", "^", { desc = "Go to line start" })
+vim.keymap.set("n", "<leader>e", "$", { desc = "Go to line end" })
+vim.keymap.set("i", "<C-a>", "<C-o>^", { desc = "Go to line start" })
+vim.keymap.set("i", "<C-e>", "<End>", { desc = "Go to line end" })
 
 -- -----------------------------------------------------------------------------
 -- General: Jumplist Navigation
 -- -----------------------------------------------------------------------------
-vim.keymap.set("n", "<M-left>", "g;", { desc = "Go to older cursor position" })
-vim.keymap.set("n", "<M-right>", "g,", { desc = "Go to newer cursor position" })
-
--- -----------------------------------------------------------------------------
--- General: Buffer Navigation
--- -----------------------------------------------------------------------------
-vim.keymap.set("n", "<M-S-left>", "<Esc>:bprevious<Esc>", { desc = "Go to previous visited buffer" })
-vim.keymap.set("n", "<M-S-right>", "<Esc>:bnext<Esc>", { desc = "Go to next visited buffer" })
-
--- -----------------------------------------------------------------------------
--- General: Window Management
--- -----------------------------------------------------------------------------
-vim.keymap.set("n", "<leader>g<left>", "<C-w><C-h>", { desc = "Move focus left" })
-vim.keymap.set("n", "<leader>g<down>", "<C-w><C-j>", { desc = "Move focus down" })
-vim.keymap.set("n", "<leader>g<up>", "<C-w><C-k>", { desc = "Move focus up" })
-vim.keymap.set("n", "<leader>g<right>", "<C-w><C-l>", { desc = "Move focus right" })
-vim.keymap.set("n", "<leader>Sv", ":vsplit<CR>", { desc = "Vertical Split" })
-vim.keymap.set("n", "<leader>Sh", ":split<CR>", { desc = "Horizontal Split" })
-vim.keymap.set("n", "<leader>Sc", "<cmd>close<CR>", { desc = "Close Split" })
-vim.keymap.set("n", "<leader>So", "<cmd>only<CR>", { desc = "Keep Only This Split" })
+vim.keymap.set("n", "<M-left>", "g;", { desc = "Older cursor position" })
+vim.keymap.set("n", "<M-right>", "g,", { desc = "Newer cursor position" })
 
 -- -----------------------------------------------------------------------------
 -- General: Line Movement
 -- -----------------------------------------------------------------------------
 vim.keymap.set("n", "<M-down>", ":m .+1<CR>==", { desc = "Move line down" })
 vim.keymap.set("n", "<M-up>", ":m .-2<CR>==", { desc = "Move line up" })
+vim.keymap.set("v", "<M-down>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
+vim.keymap.set("v", "<M-up>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 
 -- -----------------------------------------------------------------------------
 -- General: Clipboard
 -- -----------------------------------------------------------------------------
-vim.keymap.set("n", "<leader>y", "<cmd>%y+<CR>", { desc = "Yank entire buffer to system clipboard" })
-vim.keymap.set({ "n", "v" }, "<C-a>", "<Esc>ggVG", { desc = "Select all text" })
+vim.keymap.set("n", "<leader>y", "<cmd>%y+<CR>", { desc = "Yank buffer to clipboard" })
+vim.keymap.set({ "n", "v" }, "<C-a>", "<Esc>ggVG", { desc = "Select all" })
 
 -- -----------------------------------------------------------------------------
--- Plugin: Oil (File Explorer)
+-- Buffers: <leader>b
 -- -----------------------------------------------------------------------------
-vim.keymap.set("n", "-", "<cmd>Oil<cr>", { desc = "Oil File Explorer" })
+vim.keymap.set("n", "<leader>bb", fzf.buffers, { desc = "List buffers" })
+vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Delete buffer" })
+vim.keymap.set("n", "<leader>bn", "<cmd>bnext<CR>", { desc = "Next buffer" })
+vim.keymap.set("n", "<leader>bp", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
+vim.keymap.set("n", "<M-S-left>", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
+vim.keymap.set("n", "<M-S-right>", "<cmd>bnext<CR>", { desc = "Next buffer" })
 
 -- -----------------------------------------------------------------------------
--- Plugin: fzf-lua (Fuzzy Finder)
+-- Find: <leader>f (fzf-lua)
 -- -----------------------------------------------------------------------------
 vim.keymap.set("n", "<leader>ff", fzf.files, { desc = "Find files" })
-vim.keymap.set("n", "<leader>fG", fzf.live_grep, { desc = "Grep" })
-vim.keymap.set("n", "<leader>fb", fzf.buffers, { desc = "Buffers" })
-vim.keymap.set("n", "<leader>fh", fzf.help_tags, { desc = "Help Tags" })
-vim.keymap.set("n", "<leader>fC", fzf.commands, { desc = "Commands" })
+vim.keymap.set("n", "<leader>fg", fzf.live_grep, { desc = "Find grep" })
+vim.keymap.set("n", "<leader>fw", fzf.grep_cword, { desc = "Find word under cursor" })
+vim.keymap.set("n", "<leader>fh", fzf.help_tags, { desc = "Find help" })
+vim.keymap.set("n", "<leader>fc", fzf.commands, { desc = "Find commands" })
+vim.keymap.set("n", "<leader>fr", fzf.oldfiles, { desc = "Find recent files" })
+vim.keymap.set("n", "<leader>f/", fzf.blines, { desc = "Find in buffer" })
 
 -- -----------------------------------------------------------------------------
--- Plugin: fzf-lua (LSP Integration)
+-- Git: <leader>g (unified gitsigns + fzf git)
 -- -----------------------------------------------------------------------------
-vim.keymap.set("n", "<leader>fr", fzf.lsp_references, { desc = "LSP References" })
-vim.keymap.set("n", "<leader>fD", fzf.lsp_definitions, { desc = "LSP Definitions" })
-vim.keymap.set("n", "<leader>fca", fzf.lsp_code_actions, { desc = "LSP Code Actions" })
-vim.keymap.set("n", "<leader>fs", fzf.lsp_document_symbols, { desc = "LSP Document Symbols" })
-vim.keymap.set("n", "<leader>fw", fzf.lsp_workspace_symbols, { desc = "LSP Workspace Symbols" })
-vim.keymap.set("n", "<leader>fR", vim.lsp.buf.rename, { desc = "LSP rename" })
-vim.keymap.set("n", "<leader>fdd", fzf.diagnostics_document, { desc = "LSP Document Diagnostics" })
-vim.keymap.set("n", "<leader>fwd", fzf.diagnostics_workspace, { desc = "LSP Workspace Diagnostics" })
+-- Git status/history (fzf)
+vim.keymap.set("n", "<leader>gs", fzf.git_status, { desc = "Git status" })
+vim.keymap.set("n", "<leader>gc", fzf.git_commits, { desc = "Git commits" })
+vim.keymap.set("n", "<leader>gC", fzf.git_bcommits, { desc = "Git buffer commits" })
+vim.keymap.set("n", "<leader>gb", fzf.git_branches, { desc = "Git branches" })
+-- Git hunks (gitsigns)
+vim.keymap.set("n", "<leader>gp", "<cmd>Gitsigns preview_hunk<CR>", { desc = "Preview hunk" })
+vim.keymap.set("n", "<leader>gr", "<cmd>Gitsigns reset_hunk<CR>", { desc = "Reset hunk" })
+vim.keymap.set("n", "<leader>gR", "<cmd>Gitsigns reset_buffer<CR>", { desc = "Reset buffer" })
+vim.keymap.set("n", "<leader>gd", "<cmd>Gitsigns diffthis<CR>", { desc = "Diff this" })
+-- Git blame (gitsigns)
+vim.keymap.set("n", "<leader>gl", "<cmd>Gitsigns toggle_current_line_blame<CR>", { desc = "Toggle line blame" })
+vim.keymap.set("n", "<leader>gB", "<cmd>Gitsigns blame<CR>", { desc = "Blame buffer" })
+-- Hunk navigation (standard [ ] motion)
+vim.keymap.set("n", "]h", "<cmd>Gitsigns next_hunk<CR>", { desc = "Next hunk" })
+vim.keymap.set("n", "[h", "<cmd>Gitsigns prev_hunk<CR>", { desc = "Previous hunk" })
 
 -- -----------------------------------------------------------------------------
--- Plugin: fzf-lua (Git Integration)
+-- LSP: <leader>l
 -- -----------------------------------------------------------------------------
-vim.keymap.set("n", "<leader>fgs", fzf.git_status, { desc = "Git Status" })
-vim.keymap.set("n", "<leader>fgc", fzf.git_commits, { desc = "Git Commits" })
+vim.keymap.set("n", "<leader>ld", fzf.lsp_definitions, { desc = "Go to definition" })
+vim.keymap.set("n", "<leader>lD", fzf.lsp_declarations, { desc = "Go to declaration" })
+vim.keymap.set("n", "<leader>lr", fzf.lsp_references, { desc = "Find references" })
+vim.keymap.set("n", "<leader>li", fzf.lsp_implementations, { desc = "Find implementations" })
+vim.keymap.set("n", "<leader>lt", fzf.lsp_typedefs, { desc = "Type definition" })
+vim.keymap.set("n", "<leader>ls", fzf.lsp_document_symbols, { desc = "Document symbols" })
+vim.keymap.set("n", "<leader>lS", fzf.lsp_workspace_symbols, { desc = "Workspace symbols" })
+vim.keymap.set("n", "<leader>la", fzf.lsp_code_actions, { desc = "Code actions" })
+vim.keymap.set("n", "<leader>ln", vim.lsp.buf.rename, { desc = "Rename symbol" })
+vim.keymap.set("n", "<leader>lh", vim.lsp.buf.hover, { desc = "Hover documentation" })
+vim.keymap.set("n", "<leader>lf", function()
+	require("conform").format()
+end, { desc = "Format buffer" })
+-- Diagnostics
+vim.keymap.set("n", "<leader>ldd", fzf.diagnostics_document, { desc = "Document diagnostics" })
+vim.keymap.set("n", "<leader>ldw", fzf.diagnostics_workspace, { desc = "Workspace diagnostics" })
+vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
+vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
 
 -- -----------------------------------------------------------------------------
--- Plugin: Gitsigns (Git Blame / Hunks)
+-- Window: <leader>w
 -- -----------------------------------------------------------------------------
-vim.keymap.set("n", "<leader>hb", "<cmd>Gitsigns toggle_current_line_blame<CR>", { desc = "Toggle Git Blame" })
-vim.keymap.set("n", "<leader>hB", "<cmd>Gitsigns blame<CR>", { desc = "Git Blame Buffer" })
-vim.keymap.set("n", "<leader>hp", "<cmd>Gitsigns preview_hunk<CR>", { desc = "Preview Hunk" })
-vim.keymap.set("n", "<leader>hr", "<cmd>Gitsigns reset_hunk<CR>", { desc = "Reset Hunk" })
-vim.keymap.set("n", "<leader>hR", "<cmd>Gitsigns reset_buffer<CR>", { desc = "Reset Buffer" })
-vim.keymap.set("n", "<leader>hd", "<cmd>Gitsigns diffthis<CR>", { desc = "Diff This" })
-vim.keymap.set("n", "]h", "<cmd>Gitsigns next_hunk<CR>", { desc = "Next Hunk" })
-vim.keymap.set("n", "[h", "<cmd>Gitsigns prev_hunk<CR>", { desc = "Previous Hunk" })
+vim.keymap.set("n", "<leader>wv", "<cmd>vsplit<CR>", { desc = "Split vertical" })
+vim.keymap.set("n", "<leader>ws", "<cmd>split<CR>", { desc = "Split horizontal" })
+vim.keymap.set("n", "<leader>wc", "<cmd>close<CR>", { desc = "Close window" })
+vim.keymap.set("n", "<leader>wo", "<cmd>only<CR>", { desc = "Close other windows" })
+vim.keymap.set("n", "<leader>w=", "<C-w>=", { desc = "Balance windows" })
+-- Window navigation
+vim.keymap.set("n", "<leader>wh", "<C-w>h", { desc = "Go left" })
+vim.keymap.set("n", "<leader>wj", "<C-w>j", { desc = "Go down" })
+vim.keymap.set("n", "<leader>wk", "<C-w>k", { desc = "Go up" })
+vim.keymap.set("n", "<leader>wl", "<C-w>l", { desc = "Go right" })
+vim.keymap.set("n", "<leader>w<left>", "<C-w>h", { desc = "Go left" })
+vim.keymap.set("n", "<leader>w<down>", "<C-w>j", { desc = "Go down" })
+vim.keymap.set("n", "<leader>w<up>", "<C-w>k", { desc = "Go up" })
+vim.keymap.set("n", "<leader>w<right>", "<C-w>l", { desc = "Go right" })
 
 -- -----------------------------------------------------------------------------
--- Plugin: ToggleTerm (Terminal)
+-- Terminal: <leader>t
 -- -----------------------------------------------------------------------------
 local function toggle_lazygit()
 	lazygit:toggle()
@@ -684,18 +727,15 @@ local function toggle_thoth()
 	thoth:toggle()
 end
 
-vim.keymap.set(
-	"n",
-	"<leader>t",
-	":ToggleTerm direction=float<CR>",
-	{ noremap = true, silent = true, desc = "Toggle Terminal" }
-)
-vim.keymap.set("n", "<leader>G", toggle_lazygit, { desc = "Lazygit" })
-vim.keymap.set("n", "<leader>T", toggle_thoth, { desc = "Thoth" })
+vim.keymap.set("n", "<leader>tt", ":ToggleTerm direction=float<CR>", { desc = "Toggle terminal" })
+vim.keymap.set("n", "<leader>th", ":ToggleTerm direction=horizontal<CR>", { desc = "Terminal horizontal" })
+vim.keymap.set("n", "<leader>tv", ":ToggleTerm direction=vertical<CR>", { desc = "Terminal vertical" })
+vim.keymap.set("n", "<leader>tg", toggle_lazygit, { desc = "Lazygit" })
+vim.keymap.set("n", "<leader>to", toggle_thoth, { desc = "Thoth" })
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
 -- -----------------------------------------------------------------------------
--- Plugin: OpenCode (AI Assistant)
+-- OpenCode AI: <leader>o
 -- -----------------------------------------------------------------------------
 local function toggle_opencode()
 	opencode.toggle()
@@ -737,29 +777,30 @@ local function select_prompt()
 	opencode.select()
 end
 
-vim.keymap.set("n", "<leader>ot", toggle_opencode, { desc = "Toggle OpenCode" })
+vim.keymap.set("n", "<leader>oo", toggle_opencode, { desc = "Toggle OpenCode" })
 vim.keymap.set("n", "<leader>oa", ask_about_code, { desc = "Ask about code" })
 vim.keymap.set("v", "<leader>oa", ask_about_selection, { desc = "Ask about selection" })
-vim.keymap.set("n", "<leader>o+", add_buffer_to_prompt, { desc = "Add buffer to prompt" })
-vim.keymap.set("v", "<leader>o+", add_selection_to_prompt, { desc = "Add selection to prompt" })
+vim.keymap.set("n", "<leader>ob", add_buffer_to_prompt, { desc = "Add buffer to prompt" })
+vim.keymap.set("v", "<leader>ob", add_selection_to_prompt, { desc = "Add selection to prompt" })
 vim.keymap.set("n", "<leader>oe", explain_code, { desc = "Explain code" })
 vim.keymap.set("n", "<leader>on", new_session, { desc = "New session" })
-vim.keymap.set("n", "<S-C-u>", scroll_up, { desc = "Scroll up" })
-vim.keymap.set("n", "<S-C-d>", scroll_down, { desc = "Scroll down" })
-vim.keymap.set({ "n", "v" }, "<leader>os", select_prompt, { desc = "Select prompt" })
+vim.keymap.set("n", "<leader>os", select_prompt, { desc = "Select prompt" })
+vim.keymap.set("n", "<C-S-u>", scroll_up, { desc = "OpenCode scroll up" })
+vim.keymap.set("n", "<C-S-d>", scroll_down, { desc = "OpenCode scroll down" })
 
 -- -----------------------------------------------------------------------------
--- Plugin: Mason & Pack
+-- Plugins: <leader>p
 -- -----------------------------------------------------------------------------
-vim.keymap.set("n", "<leader>M", "<cmd>Mason<CR>", { desc = "Open Mason Window" })
-vim.keymap.set("n", "<leader>L", "<cmd>lua vim.pack.update()<CR>", { desc = "Update Plugins" })
+vim.keymap.set("n", "<leader>pm", "<cmd>Mason<CR>", { desc = "Mason" })
+vim.keymap.set("n", "<leader>pu", "<cmd>lua vim.pack.update()<CR>", { desc = "Update plugins" })
+vim.keymap.set("n", "<leader>pk", "<cmd>Kanban<CR>", { desc = "Kanban board" })
 
 -- -----------------------------------------------------------------------------
--- Plugin: Copilot
+-- File Explorer: Oil
+-- -----------------------------------------------------------------------------
+vim.keymap.set("n", "-", "<cmd>Oil<cr>", { desc = "File explorer (Oil)" })
+
+-- -----------------------------------------------------------------------------
+-- Copilot
 -- -----------------------------------------------------------------------------
 vim.keymap.set("i", "<S-Tab>", 'copilot#Accept("\\<S-Tab>")', { expr = true, replace_keycodes = false })
-
--- -----------------------------------------------------------------------------
--- Plugin: Kanban
--- -----------------------------------------------------------------------------
-vim.keymap.set("n", "<leader>K", "<cmd>Kanban<CR>", { desc = "Open Kanban Board" })
