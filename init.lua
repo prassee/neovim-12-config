@@ -722,22 +722,25 @@ vim.keymap.set("n", "[h", "<cmd>Gitsigns prev_hunk<CR>", { desc = "Previous hunk
 -- -----------------------------------------------------------------------------
 -- LSP: <leader>l
 -- -----------------------------------------------------------------------------
-vim.keymap.set("n", "<leader>ld", fzf.lsp_definitions, { desc = "Go to definition" })
-vim.keymap.set("n", "<leader>lD", fzf.lsp_declarations, { desc = "Go to declaration" })
-vim.keymap.set("n", "<leader>lr", fzf.lsp_references, { desc = "Find references" })
-vim.keymap.set("n", "<leader>li", fzf.lsp_implementations, { desc = "Find implementations" })
-vim.keymap.set("n", "<leader>lt", fzf.lsp_typedefs, { desc = "Type definition" })
+-- Goto: <leader>lg
+vim.keymap.set("n", "<leader>lgd", fzf.lsp_definitions, { desc = "Definition" })
+vim.keymap.set("n", "<leader>lgD", fzf.lsp_declarations, { desc = "Declaration" })
+vim.keymap.set("n", "<leader>lgi", fzf.lsp_implementations, { desc = "Implementation" })
+vim.keymap.set("n", "<leader>lgt", fzf.lsp_typedefs, { desc = "Type definition" })
+-- Find/Search
+vim.keymap.set("n", "<leader>lr", fzf.lsp_references, { desc = "References" })
 vim.keymap.set("n", "<leader>ls", fzf.lsp_document_symbols, { desc = "Document symbols" })
 vim.keymap.set("n", "<leader>lS", fzf.lsp_workspace_symbols, { desc = "Workspace symbols" })
+-- Actions
 vim.keymap.set("n", "<leader>la", fzf.lsp_code_actions, { desc = "Code actions" })
 vim.keymap.set("n", "<leader>ln", vim.lsp.buf.rename, { desc = "Rename symbol" })
 vim.keymap.set("n", "<leader>lh", vim.lsp.buf.hover, { desc = "Hover documentation" })
 vim.keymap.set("n", "<leader>lf", function()
 	require("conform").format()
 end, { desc = "Format buffer" })
--- Diagnostics
-vim.keymap.set("n", "<leader>ldd", fzf.diagnostics_document, { desc = "Document diagnostics" })
-vim.keymap.set("n", "<leader>ldw", fzf.diagnostics_workspace, { desc = "Workspace diagnostics" })
+-- Diagnostics: <leader>lx
+vim.keymap.set("n", "<leader>lxd", fzf.diagnostics_document, { desc = "Document diagnostics" })
+vim.keymap.set("n", "<leader>lxw", fzf.diagnostics_workspace, { desc = "Workspace diagnostics" })
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
 
