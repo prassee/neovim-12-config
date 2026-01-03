@@ -758,3 +758,7 @@ vim.keymap.set("n", "<leader>L", "<cmd>lua vim.pack.update()<CR>", { desc = "Upd
 -- Plugin: Copilot
 -- -----------------------------------------------------------------------------
 vim.keymap.set("i", "<S-Tab>", 'copilot#Accept("\\<S-Tab>")', { expr = true, replace_keycodes = false })
+-- -----------------------------------------------------------------------------
+-- Plugin: Kanban
+-- -----------------------------------------------------------------------------
+vim.keymap.set("n", "<leader>K", "<cmd>Kanban<CR>", { desc = "Open Kanban Board" })
