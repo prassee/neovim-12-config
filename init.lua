@@ -66,11 +66,6 @@ vim.opt.splitbelow = true
 vim.opt.undofile = true
 
 -- -----------------------------------------------------------------------------
--- Clipboard (Wayland/wl-copy)
--- -----------------------------------------------------------------------------
-vim.opt.clipboard = "unnamedplus"
-
--- -----------------------------------------------------------------------------
 -- Syntax
 -- -----------------------------------------------------------------------------
 -- Keep Vim syntax enabled as fallback when Treesitter parser unavailable
@@ -131,6 +126,7 @@ vim.pack.add({
 	"https://github.com/L3MON4D3/LuaSnip",
 	"https://github.com/rafamadriz/friendly-snippets",
 	"https://github.com/nvim-mini/mini.clue",
+	"https://github.com/nvim-mini/mini.surround",
 })
 
 -- -----------------------------------------------------------------------------
@@ -497,6 +493,7 @@ require("mini.clue").setup({
 		{ mode = "i", keys = "<C-x>" },
 		{ mode = "n", keys = "g" },
 		{ mode = "x", keys = "g" },
+		{ mode = "v", keys = "gs" },
 		{ mode = "n", keys = "'" },
 		{ mode = "n", keys = "`" },
 		{ mode = "x", keys = "'" },
@@ -508,6 +505,33 @@ require("mini.clue").setup({
 		{ mode = "n", keys = "<C-w>" },
 		{ mode = "n", keys = "z" },
 		{ mode = "x", keys = "z" },
+	},
+	clues = {
+		-- Surround hints
+		{ mode = "v", keys = "gsa", desc = "Add surrounding" },
+		{ mode = "v", keys = "gsd", desc = "Delete surrounding" },
+		{ mode = "v", keys = "gsr", desc = "Replace surrounding" },
+		{ mode = "v", keys = "gsf", desc = "Find surrounding (right)" },
+		{ mode = "v", keys = "gsF", desc = "Find surrounding (left)" },
+		{ mode = "v", keys = "gsh", desc = "Highlight surrounding" },
+		{ mode = "n", keys = "gsn", desc = "Update n_lines" },
+		{ mode = "x", keys = "gsa", desc = "Add surrounding" },
+	},
+})
+
+-- -----------------------------------------------------------------------------
+-- Surround (mini.surround)
+-- -----------------------------------------------------------------------------
+require("mini.surround").setup({
+	-- Use 'gs' prefix to avoid conflict with 's' (substitute) in visual mode
+	mappings = {
+		add = "gsa", -- Add surrounding (gsa in visual, gsaiw( in normal)
+		delete = "gsd", -- Delete surrounding (gsd))
+		replace = "gsr", -- Replace surrounding (gsr)})
+		find = "gsf", -- Find surrounding (to the right)
+		find_left = "gsF", -- Find surrounding (to the left)
+		highlight = "gsh", -- Highlight surrounding
+		update_n_lines = "gsn", -- Update n_lines
 	},
 })
 
