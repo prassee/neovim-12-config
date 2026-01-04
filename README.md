@@ -55,10 +55,10 @@ Lua, Go, Python (pyrefly), Docker, TOML, JSON, Markdown, YAML, Typst
 
 | Tag | Description |
 |-----|-------------|
-| `v0.1.0` | Add Copilot integration and refine keymaps and config |
-| `v0.2.0` | Add gitsigns.nvim for git blame and hunk management |
-| `v0.3.0` | Updated config |
 | `v0.4.0` | Modular config - separated plugins & keymaps to own lua files |
+| `v0.3.0` | Updated config |
+| `v0.2.0` | Add gitsigns.nvim for git blame and hunk management |
+| `v0.1.0` | Add Copilot integration and refine keymaps and config |
 
 ## Roadmap
 
