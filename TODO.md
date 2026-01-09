@@ -2,7 +2,6 @@
 
 ## Backlog
 - [ ] move to tmux popups for displaying Lazygit
-- sqlua plugin config
 
 ## In Progress
 
