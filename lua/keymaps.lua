@@ -12,7 +12,6 @@
 --   <leader>w  = Window management
 
 local fzf = require("fzf-lua")
--- local opencode = require("opencode")
 local Terminal = require("toggleterm.terminal").Terminal
 
 -- =============================================================================
@@ -34,46 +33,6 @@ local function toggle_thoth()
 	thoth:toggle()
 end
 
--- -- OpenCode functions
--- local function toggle_opencode()
--- 	opencode.toggle()
--- end
--- 
--- local function ask_about_code()
--- 	opencode.ask("@cursor: ")
--- end
--- 
--- local function ask_about_selection()
--- 	opencode.ask("@selection: ")
--- end
--- 
--- local function add_buffer_to_prompt()
--- 	opencode.prompt("@buffer", { append = true })
--- end
--- 
--- local function add_selection_to_prompt()
--- 	opencode.prompt("@selection", { append = true })
--- end
--- 
--- local function explain_code()
--- 	opencode.prompt("Explain @cursor and its context")
--- end
--- 
--- local function new_session()
--- 	opencode.command("session_new")
--- end
--- 
--- local function scroll_up()
--- 	opencode.command("messages_half_page_up")
--- end
--- 
--- local function scroll_down()
--- 	opencode.command("messages_half_page_down")
--- end
--- 
--- local function select_prompt()
--- 	opencode.select()
--- end
 
 -- =============================================================================
 -- General: Saving & Quitting
@@ -214,19 +173,6 @@ vim.keymap.set("n", "<leader>tg", toggle_lazygit, { desc = "Lazygit" })
 vim.keymap.set("n", "<leader>to", toggle_thoth, { desc = "Thoth" })
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
--- -- =============================================================================
--- -- OpenCode AI: <leader>o
--- -- =============================================================================
--- vim.keymap.set("n", "<leader>oo", toggle_opencode, { desc = "Toggle OpenCode" })
--- vim.keymap.set("n", "<leader>oa", ask_about_code, { desc = "Ask about code" })
--- vim.keymap.set("v", "<leader>oa", ask_about_selection, { desc = "Ask about selection" })
--- vim.keymap.set("n", "<leader>ob", add_buffer_to_prompt, { desc = "Add buffer to prompt" })
--- vim.keymap.set("v", "<leader>ob", add_selection_to_prompt, { desc = "Add selection to prompt" })
--- vim.keymap.set("n", "<leader>oe", explain_code, { desc = "Explain code" })
--- vim.keymap.set("n", "<leader>on", new_session, { desc = "New session" })
--- vim.keymap.set("n", "<leader>os", select_prompt, { desc = "Select prompt" })
--- vim.keymap.set("n", "<C-S-u>", scroll_up, { desc = "OpenCode scroll up" })
--- vim.keymap.set("n", "<C-S-d>", scroll_down, { desc = "OpenCode scroll down" })
 
 -- =============================================================================
 -- Plugins: <leader>p

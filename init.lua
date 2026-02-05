@@ -121,6 +121,7 @@ end, {
 -- Core Plugins
 -- -----------------------------------------------------------------------------
 vim.pack.add({
+	"https://github.com/nvim-lua/plenary.nvim",
 	"https://github.com/nvim-treesitter/nvim-treesitter",
 	"https://github.com/neovim/nvim-lspconfig",
 	"https://github.com/Saghen/blink.cmp",
@@ -163,7 +164,7 @@ vim.pack.add({
 	"https://github.com/stevearc/conform.nvim",
 	"https://github.com/akinsho/toggleterm.nvim",
 	"https://github.com/viniciusteixeiradias/kanban.nvim",
-	"https://github.com/NickvanDyke/opencode.nvim",
+	-- "https://github.com/sudo-tee/opencode.nvim", -- Plugin causes freeze on toggle
 	"https://github.com/github/copilot.vim",
 	"https://github.com/numToStr/Comment.nvim",
 	"https://github.com/lewis6991/gitsigns.nvim",
