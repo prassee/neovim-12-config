@@ -1,13 +1,14 @@
 -- =============================================================================
 -- SECTION 1: GLOBALS & OPTIONS
 -- =============================================================================
-
+--
 -- -----------------------------------------------------------------------------
 -- Leader & Global Variables
 -- -----------------------------------------------------------------------------
 vim.g.mapleader = " "
 vim.g.have_nerd_font = true
 vim.g.copilot_no_tab_map = true -- Disable default Copilot tab mapping
+vim.opt.clipboard = "unnamedplus"
 
 -- -----------------------------------------------------------------------------
 -- Disable Built-in Completion (use blink.cmp instead)
