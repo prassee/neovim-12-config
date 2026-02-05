@@ -64,6 +64,7 @@ vim.keymap.set("i", "<C-e>", "<End>", { desc = "Go to line end" })
 -- =============================================================================
 vim.keymap.set("n", "<M-left>", "g;", { desc = "Older cursor position" })
 vim.keymap.set("n", "<M-right>", "g,", { desc = "Newer cursor position" })
+vim.keymap.set("n", "<leader>.", "`.", { desc = "Last edit location" })
 
 -- =============================================================================
 -- General: Line Movement
