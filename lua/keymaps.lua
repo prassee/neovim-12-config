@@ -24,6 +24,11 @@ local thoth = Terminal:new({ cmd = "thoth", direction = "float", hidden = true }
 -- Helper Functions
 -- =============================================================================
 
+-- Format buffer
+local function format_buffer()
+	require("conform").format()
+end
+
 -- Terminal toggles
 local function toggle_lazygit()
 	lazygit:toggle()
@@ -32,7 +37,6 @@ end
 local function toggle_thoth()
 	thoth:toggle()
 end
-
 
 -- =============================================================================
 -- General: Saving & Quitting
@@ -51,13 +55,10 @@ vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highl
 -- =============================================================================
 -- General: Line Navigation
 -- =============================================================================
-vim.keymap.set({ "n", "v", "i" }, "<Home>", "<Home>", { noremap = true })
-vim.keymap.set({ "n", "v", "i" }, "<End>", "<End>", { noremap = true })
 vim.keymap.set("n", "<leader>a", "^", { desc = "Go to line start" })
 vim.keymap.set("n", "<leader>e", "$", { desc = "Go to line end" })
 vim.keymap.set("i", "<C-a>", "<C-o>^", { desc = "Go to line start" })
 vim.keymap.set("i", "<C-e>", "<End>", { desc = "Go to line end" })
-
 
 -- =============================================================================
 -- General: Jumplist Navigation
@@ -136,9 +137,7 @@ vim.keymap.set("n", "<leader>lS", fzf.lsp_workspace_symbols, { desc = "Workspace
 vim.keymap.set("n", "<leader>la", fzf.lsp_code_actions, { desc = "Code actions" })
 vim.keymap.set("n", "<leader>ln", vim.lsp.buf.rename, { desc = "Rename symbol" })
 vim.keymap.set("n", "<leader>lh", vim.lsp.buf.hover, { desc = "Hover documentation" })
-vim.keymap.set("n", "<leader>lf", function()
-	require("conform").format()
-end, { desc = "Format buffer" })
+vim.keymap.set("n", "<leader>lf", format_buffer, { desc = "Format buffer" })
 -- Diagnostics: <leader>lx
 vim.keymap.set("n", "<leader>lxd", fzf.diagnostics_document, { desc = "Document diagnostics" })
 vim.keymap.set("n", "<leader>lxw", fzf.diagnostics_workspace, { desc = "Workspace diagnostics" })
@@ -153,15 +152,19 @@ vim.keymap.set("n", "<leader>ws", "<cmd>split<CR>", { desc = "Split horizontal" 
 vim.keymap.set("n", "<leader>wc", "<cmd>close<CR>", { desc = "Close window" })
 vim.keymap.set("n", "<leader>wo", "<cmd>only<CR>", { desc = "Close other windows" })
 vim.keymap.set("n", "<leader>w=", "<C-w>=", { desc = "Balance windows" })
--- Window navigation
-vim.keymap.set("n", "<leader>wh", "<C-w>h", { desc = "Go left" })
-vim.keymap.set("n", "<leader>wj", "<C-w>j", { desc = "Go down" })
-vim.keymap.set("n", "<leader>wk", "<C-w>k", { desc = "Go up" })
-vim.keymap.set("n", "<leader>wl", "<C-w>l", { desc = "Go right" })
-vim.keymap.set("n", "<leader>w<left>", "<C-w>h", { desc = "Go left" })
-vim.keymap.set("n", "<leader>w<down>", "<C-w>j", { desc = "Go down" })
-vim.keymap.set("n", "<leader>w<up>", "<C-w>k", { desc = "Go up" })
-vim.keymap.set("n", "<leader>w<right>", "<C-w>l", { desc = "Go right" })
+
+-- Window navigation (hjkl and arrow keys map to same commands)
+local nav_keys = {
+	{ { "h", "<left>" }, "<C-w>h", "Go left" },
+	{ { "j", "<down>" }, "<C-w>j", "Go down" },
+	{ { "k", "<up>" }, "<C-w>k", "Go up" },
+	{ { "l", "<right>" }, "<C-w>l", "Go right" },
+}
+for _, map in ipairs(nav_keys) do
+	for _, key in ipairs(map[1]) do
+		vim.keymap.set("n", "<leader>w" .. key, map[2], { desc = map[3] })
+	end
+end
 
 -- =============================================================================
 -- Terminal: <leader>t
@@ -172,7 +175,6 @@ vim.keymap.set("n", "<leader>tv", ":ToggleTerm direction=vertical<CR>", { desc =
 vim.keymap.set("n", "<leader>tg", toggle_lazygit, { desc = "Lazygit" })
 vim.keymap.set("n", "<leader>to", toggle_thoth, { desc = "Thoth" })
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
-
 
 -- =============================================================================
 -- Plugins: <leader>p

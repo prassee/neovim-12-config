@@ -164,7 +164,7 @@ vim.pack.add({
 	"https://github.com/stevearc/conform.nvim",
 	"https://github.com/akinsho/toggleterm.nvim",
 	"https://github.com/viniciusteixeiradias/kanban.nvim",
-	-- "https://github.com/sudo-tee/opencode.nvim", -- Plugin causes freeze on toggle
+	"https://github.com/sudo-tee/opencode.nvim", -- Plugin causes freeze on toggle
 	"https://github.com/github/copilot.vim",
 	"https://github.com/numToStr/Comment.nvim",
 	"https://github.com/lewis6991/gitsigns.nvim",

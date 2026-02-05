@@ -423,3 +423,4 @@ require("typst-preview").setup({
 	},
 })
 
+require("opencode").setup({})
