@@ -423,23 +423,15 @@ require("typst-preview").setup({
 	},
 })
 
--- Note: opencode.nvim doesn't have a setup() method in the plugin config
--- Configuration is handled through init.lua or opencode CLI config instead
-
-require("opencode").setup({
-	-- Optional: specify the path to the opencode CLI if it's not in your system PATH
-	opencode_cmd = "opencode",
-})
-
 -- -----------------------------------------------------------------------------
 -- GitHub Copilot (copilot.vim)
 -- -----------------------------------------------------------------------------
 -- Disable Copilot in prompt/input windows to avoid AI suggestions interfering
 -- Copilot is still available in normal code editing (mapped to <S-Tab> in init.lua)
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = { "opencode_output", "opencode_input", "prompt", "input" },
-	group = vim.api.nvim_create_augroup("disable-copilot-in-prompts", { clear = true }),
-	callback = function()
-		vim.b.copilot_enabled = false
-	end,
-})
+-- vim.api.nvim_create_autocmd("FileType", {
+-- 	pattern = { "opencode_output", "opencode_input", "prompt", "input" },
+-- 	group = vim.api.nvim_create_augroup("disable-copilot-in-prompts", { clear = true }),
+-- 	callback = function()
+-- 		vim.b.copilot_enabled = false
+-- 	end,
+-- })

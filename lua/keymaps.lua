@@ -6,7 +6,6 @@
 --   <leader>f  = Find (fzf-lua search)
 --   <leader>g  = Git (gitsigns + fzf git)
 --   <leader>l  = LSP actions
---   <leader>o  = OpenCode AI
 --   <leader>p  = Plugins (Mason, Pack, Kanban, Typst)
 --   <leader>t  = Terminal / Tools
 --   <leader>w  = Window management
@@ -192,6 +191,15 @@ vim.keymap.set("n", "<leader>ptt", "<cmd>TypstPreviewToggle<CR>", { desc = "Typs
 -- =============================================================================
 vim.keymap.set("n", "-", "<cmd>Oil<cr>", { desc = "File explorer (Oil)" })
 
+-- =============================================================================
+-- OpenCode: <leader>o
+-- =============================================================================
+-- local opencode = require("opencode")
+--
+-- vim.keymap.set("n", "<leader>og", opencode.toggle, { desc = "Toggle opencode" })
+-- vim.keymap.set("n", "<leader>oi", opencode.start, { desc = "Open opencode" })
+-- vim.keymap.set("n", "<leader>o/", opencode.ask, { desc = "Quick chat" })
+--
 -- =============================================================================
 -- Copilot
 -- =============================================================================
