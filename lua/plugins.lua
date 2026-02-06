@@ -424,6 +424,14 @@ require("typst-preview").setup({
 })
 
 -- -----------------------------------------------------------------------------
+-- OpenCode
+-- -----------------------------------------------------------------------------
+require("opencode").setup({
+	-- Configuration options can be added here
+	-- See https://github.com/sudo-tee/opencode.nvim for available options
+})
+
+-- -----------------------------------------------------------------------------
 -- GitHub Copilot (copilot.vim)
 -- -----------------------------------------------------------------------------
 -- Disable Copilot in prompt/input windows to avoid AI suggestions interfering

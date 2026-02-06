@@ -195,12 +195,11 @@ vim.keymap.set("n", "-", "<cmd>Oil<cr>", { desc = "File explorer (Oil)" })
 -- =============================================================================
 -- OpenCode: <leader>o
 -- =============================================================================
--- local opencode = require("opencode")
---
--- vim.keymap.set("n", "<leader>og", opencode.toggle, { desc = "Toggle opencode" })
--- vim.keymap.set("n", "<leader>oi", opencode.start, { desc = "Open opencode" })
--- vim.keymap.set("n", "<leader>o/", opencode.ask, { desc = "Quick chat" })
---
+local api = require("opencode.api")
+
+vim.keymap.set("n", "<leader>og", api.toggle, { desc = "Toggle opencode" })
+vim.keymap.set("n", "<leader>oi", api.open_input, { desc = "Open opencode input" })
+vim.keymap.set("n", "<leader>o/", api.quick_chat, { desc = "Quick chat" })
 -- =============================================================================
 -- Copilot
 -- =============================================================================

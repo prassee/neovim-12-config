@@ -128,6 +128,7 @@ vim.pack.add({
 	"https://github.com/rafamadriz/friendly-snippets",
 	"https://github.com/nvim-mini/mini.clue",
 	"https://github.com/nvim-mini/mini.surround",
+	"https://github.com/nvim-lua/plenary.nvim",
 })
 
 -- -----------------------------------------------------------------------------
@@ -167,6 +168,7 @@ vim.pack.add({
 	"https://github.com/numToStr/Comment.nvim",
 	"https://github.com/lewis6991/gitsigns.nvim",
 	"https://github.com/chomosuke/typst-preview.nvim",
+	"https://github.com/sudo-tee/opencode.nvim",
 })
 
 -- =============================================================================
