@@ -96,6 +96,12 @@ vim.diagnostic.config({
 	},
 })
 
+vim.g.opencode_opts = {
+	provider = {
+		enabled = "wezterm",
+	},
+}
+
 -- =============================================================================
 -- SECTION 2: PACKAGE INSTALLATION
 -- =============================================================================
@@ -129,6 +135,7 @@ vim.pack.add({
 	"https://github.com/nvim-mini/mini.clue",
 	"https://github.com/nvim-mini/mini.surround",
 	"https://github.com/nvim-lua/plenary.nvim",
+	"https://github.com/sudo-tee/opencode.nvim", -- Ensure opencode is loaded as core
 })
 
 -- -----------------------------------------------------------------------------
@@ -168,7 +175,6 @@ vim.pack.add({
 	"https://github.com/numToStr/Comment.nvim",
 	"https://github.com/lewis6991/gitsigns.nvim",
 	"https://github.com/chomosuke/typst-preview.nvim",
-	"https://github.com/sudo-tee/opencode.nvim",
 })
 
 -- =============================================================================

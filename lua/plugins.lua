@@ -426,10 +426,10 @@ require("typst-preview").setup({
 -- -----------------------------------------------------------------------------
 -- OpenCode
 -- -----------------------------------------------------------------------------
-require("opencode").setup({
-	-- Configuration options can be added here
-	-- See https://github.com/sudo-tee/opencode.nvim for available options
-})
+local ok, opencode = pcall(require, "opencode")
+if ok and type(opencode.setup) == "function" then
+	opencode.setup(vim.g.opencode_opts or {})
+end
 
 -- -----------------------------------------------------------------------------
 -- GitHub Copilot (copilot.vim)
