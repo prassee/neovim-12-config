@@ -426,11 +426,7 @@ require("typst-preview").setup({
 -- -----------------------------------------------------------------------------
 -- OpenCode
 -- -----------------------------------------------------------------------------
-local ok, opencode = pcall(require, "opencode")
-if ok and type(opencode.setup) == "function" then
-	opencode.setup(vim.g.opencode_opts or {})
-end
-
+require("opencode")
 -- -----------------------------------------------------------------------------
 -- GitHub Copilot (copilot.vim)
 -- -----------------------------------------------------------------------------

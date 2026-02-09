@@ -134,8 +134,9 @@ vim.pack.add({
 	"https://github.com/rafamadriz/friendly-snippets",
 	"https://github.com/nvim-mini/mini.clue",
 	"https://github.com/nvim-mini/mini.surround",
-	"https://github.com/nvim-lua/plenary.nvim",
-	"https://github.com/sudo-tee/opencode.nvim", -- Ensure opencode is loaded as core
+	-- "https://github.com/nvim-lua/plenary.nvim",
+	-- "https://github.com/sudo-tee/opencode.nvim", -- Ensure opencode is loaded as core
+	"https://github.com/nickjvandyke/opencode.nvim",
 })
 
 -- -----------------------------------------------------------------------------
