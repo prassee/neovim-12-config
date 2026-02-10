@@ -221,7 +221,7 @@ vim.lsp.config("tinymist", {
 -- -----------------------------------------------------------------------------
 -- Completion (blink.cmp)
 -- -----------------------------------------------------------------------------
-vim.opt.completeopt = {} -- Disable Neovim's built-in completion menu
+vim.opt.completeopt = { "menu", "menuone", "noselect", "popup" } -- enable popup completion for CopilotChat
 
 require("blink.cmp").setup({
 	keymap = {
@@ -247,6 +247,14 @@ require("blink.cmp").setup({
 	sources = {
 		default = { "lsp", "path", "snippets" },
 	},
+})
+
+-- Ensure CopilotChat prompt buffers get popup completion
+vim.api.nvim_create_autocmd("BufEnter", {
+	pattern = "copilot-*",
+	callback = function()
+		vim.opt_local.completeopt = { "menu", "menuone", "noselect", "popup" }
+	end,
 })
 
 -- -----------------------------------------------------------------------------
@@ -424,18 +432,18 @@ require("typst-preview").setup({
 })
 
 -- -----------------------------------------------------------------------------
--- OpenCode
+-- Copilot Chat (CopilotC-Nvim/CopilotChat.nvim)
 -- -----------------------------------------------------------------------------
-require("opencode")
--- -----------------------------------------------------------------------------
--- GitHub Copilot (copilot.vim)
--- -----------------------------------------------------------------------------
--- Disable Copilot in prompt/input windows to avoid AI suggestions interfering
--- Copilot is still available in normal code editing (mapped to <S-Tab> in init.lua)
--- vim.api.nvim_create_autocmd("FileType", {
--- 	pattern = { "opencode_output", "opencode_input", "prompt", "input" },
--- 	group = vim.api.nvim_create_augroup("disable-copilot-in-prompts", { clear = true }),
--- 	callback = function()
--- 		vim.b.copilot_enabled = false
--- 	end,
--- })
+local ok, CopilotChat = pcall(require, "CopilotChat")
+if ok and CopilotChat then
+	CopilotChat.setup({
+		-- model = "gpt-4.1",
+		auto_insert_mode = false,
+		window = {
+			layout = "vertical", -- use a vertical split (appears on the right)
+			width = 0.4,
+			border = "rounded",
+			title = "🤖 Copilot",
+		},
+	})
+end

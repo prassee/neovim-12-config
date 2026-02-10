@@ -274,23 +274,48 @@ end
 map("n", "-", "<cmd>Oil<cr>", { desc = "File explorer (Oil)" })
 
 -- =============================================================================
--- OpenCode: <leader>o
--- =============================================================================
-local ok, api = pcall(require, "opencode")
-if ok then
-	local opencode_maps = {
-		{ "og", api.toggle, "Toggle opencode" },
-		{ "oi", api.open_input, "Open opencode input" },
-		{ "o/", api.quick_chat, "Quick chat" },
-	}
-	for _, km in ipairs(opencode_maps) do
-		if type(km[2]) == "function" then
-			map("n", "<leader>" .. km[1], km[2], { desc = km[3] })
-		end
-	end
-end
-
--- =============================================================================
 -- Copilot
 -- =============================================================================
-map("i", "<S-Tab>", 'copilot#Accept("\\<S-Tab>")', { expr = true, replace_keycodes = false, desc = "Copilot accept suggestion" })
+map(
+	"i",
+	"<S-Tab>",
+	'copilot#Accept("\\<S-Tab>")',
+	{ expr = true, replace_keycodes = false, desc = "Copilot accept suggestion" }
+)
+
+-- Copilot Chat keymaps (safe: only calls when plugin available)
+map("n", "<leader>cc", function()
+	local ok, chat = pcall(require, "CopilotChat")
+	if ok and chat then
+		chat.open()
+	else
+		vim.notify("CopilotChat not installed", vim.log.levels.WARN)
+	end
+end, { desc = "CopilotChat open" })
+
+map("n", "<leader>ct", function()
+	local ok, chat = pcall(require, "CopilotChat")
+	if ok and chat then
+		chat.toggle()
+	else
+		vim.notify("CopilotChat not installed", vim.log.levels.WARN)
+	end
+end, { desc = "CopilotChat toggle" })
+
+map("n", "<leader>cp", function()
+	local ok, chat = pcall(require, "CopilotChat")
+	if ok and chat then
+		chat.select_prompt()
+	else
+		vim.notify("CopilotChat not installed", vim.log.levels.WARN)
+	end
+end, { desc = "CopilotChat select prompt" })
+
+map("n", "<leader>cr", function()
+	local ok, chat = pcall(require, "CopilotChat")
+	if ok and chat then
+		chat.reset()
+	else
+		vim.notify("CopilotChat not installed", vim.log.levels.WARN)
+	end
+end, { desc = "CopilotChat reset" })

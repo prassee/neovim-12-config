@@ -134,9 +134,7 @@ vim.pack.add({
 	"https://github.com/rafamadriz/friendly-snippets",
 	"https://github.com/nvim-mini/mini.clue",
 	"https://github.com/nvim-mini/mini.surround",
-	-- "https://github.com/nvim-lua/plenary.nvim",
-	-- "https://github.com/sudo-tee/opencode.nvim", -- Ensure opencode is loaded as core
-	"https://github.com/nickjvandyke/opencode.nvim",
+	"https://github.com/nvim-lua/plenary.nvim"	
 })
 
 -- -----------------------------------------------------------------------------
@@ -173,6 +171,7 @@ vim.pack.add({
 	"https://github.com/akinsho/toggleterm.nvim",
 	"https://github.com/viniciusteixeiradias/kanban.nvim",
 	"https://github.com/github/copilot.vim",
+	"https://github.com/CopilotC-Nvim/CopilotChat.nvim",
 	"https://github.com/numToStr/Comment.nvim",
 	"https://github.com/lewis6991/gitsigns.nvim",
 	"https://github.com/chomosuke/typst-preview.nvim",
