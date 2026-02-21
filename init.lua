@@ -5,10 +5,10 @@
 -- -----------------------------------------------------------------------------
 -- Leader & Global Variables
 -- -----------------------------------------------------------------------------
-vim.g.mapleader = " "
-vim.g.have_nerd_font = true
-vim.g.copilot_no_tab_map = true -- Disable default Copilot tab mapping
-vim.opt.clipboard = "unnamedplus"
+vim.g.mapleader = " " -- Set space as the leader key for custom mappings
+vim.g.have_nerd_font = true -- Indicate that a Nerd Font is available for icons
+vim.g.copilot_no_tab_map = true -- Disable default Copilot tab mapping to avoid conflicts
+vim.opt.clipboard = "unnamedplus" -- Use system clipboard for all operations
 
 -- -----------------------------------------------------------------------------
 -- Disable Built-in Completion (use blink.cmp instead)
@@ -28,52 +28,27 @@ vim.opt.signcolumn = "yes"
 vim.opt.cursorline = true
 vim.opt.winborder = "rounded"
 
--- -----------------------------------------------------------------------------
--- Whitespace Characters
--- -----------------------------------------------------------------------------
 vim.opt.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 
--- -----------------------------------------------------------------------------
--- Search
--- -----------------------------------------------------------------------------
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.inccommand = "split"
 
--- -----------------------------------------------------------------------------
--- Text Wrapping
--- -----------------------------------------------------------------------------
 vim.opt.wrap = true
 vim.opt.breakindent = true
 
--- -----------------------------------------------------------------------------
--- Tabs & Indentation
--- -----------------------------------------------------------------------------
 vim.opt.expandtab = true
+vim.opt.autoindent = truedd
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
 vim.opt.shiftwidth = 2
 
--- -----------------------------------------------------------------------------
--- Window Splitting
--- -----------------------------------------------------------------------------
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 
--- -----------------------------------------------------------------------------
--- Persistence
--- -----------------------------------------------------------------------------
 vim.opt.undofile = true
 
--- -----------------------------------------------------------------------------
--- Syntax
--- -----------------------------------------------------------------------------
--- Keep Vim syntax enabled as fallback when Treesitter parser unavailable
-
--- -----------------------------------------------------------------------------
--- Diagnostics
--- -----------------------------------------------------------------------------
 vim.diagnostic.config({
 	virtual_lines = {
 		current_line = true,
@@ -95,16 +70,6 @@ vim.diagnostic.config({
 		},
 	},
 })
-
-vim.g.opencode_opts = {
-	provider = {
-		enabled = "wezterm",
-	},
-}
-
--- =============================================================================
--- SECTION 2: PACKAGE INSTALLATION
--- =============================================================================
 
 -- -----------------------------------------------------------------------------
 -- Pack Command
@@ -134,7 +99,8 @@ vim.pack.add({
 	"https://github.com/rafamadriz/friendly-snippets",
 	"https://github.com/nvim-mini/mini.clue",
 	"https://github.com/nvim-mini/mini.surround",
-	"https://github.com/nvim-lua/plenary.nvim"	
+	"https://github.com/folke/snacks.nvim", -- Required for opencode.nvim ask()/select()
+	"https://github.com/nickjvandyke/opencode.nvim",
 })
 
 -- -----------------------------------------------------------------------------

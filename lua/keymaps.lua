@@ -269,6 +269,32 @@ for _, km in ipairs(plugin_maps) do
 end
 
 -- =============================================================================
+-- Opencode: <leader>o
+-- =============================================================================
+local opencode_maps = {
+	{ { "n", "x" }, "oa", function() require("opencode").ask("@this: ", { submit = true }) end, "Ask opencode" },
+	{ { "n", "x" }, "os", function() require("opencode").select() end, "Select opencode action" },
+	{ { "n", "t" }, "ot", function() require("opencode").toggle() end, "Toggle opencode" },
+	{ { "n", "x" }, "oo", function() return require("opencode").operator("@this ") end, { expr = true, desc = "Opencode operator" } },
+	{ "n", "ool", function() return require("opencode").operator("@this ") .. "_" end, { expr = true, desc = "Opencode line" } },
+}
+for _, km in ipairs(opencode_maps) do
+	local modes = km[1]
+	local lhs = "<leader>" .. km[2]
+	local rhs = km[3]
+	local opts = km[4]
+	if type(opts) == "string" then
+		opts = { desc = opts }
+	else
+		opts.desc = opts.desc or "Opencode"
+	end
+	map(modes, lhs, rhs, opts)
+end
+
+map("n", "<leader>ou", function() require("opencode").command("session.half.page.up") end, { desc = "Scroll opencode up" })
+map("n", "<leader>od", function() require("opencode").command("session.half.page.down") end, { desc = "Scroll opencode down" })
+
+-- =============================================================================
 -- File Explorer: Oil
 -- =============================================================================
 map("n", "-", "<cmd>Oil<cr>", { desc = "File explorer (Oil)" })
@@ -283,39 +309,39 @@ map(
 	{ expr = true, replace_keycodes = false, desc = "Copilot accept suggestion" }
 )
 
--- Copilot Chat keymaps (safe: only calls when plugin available)
-map("n", "<leader>cc", function()
-	local ok, chat = pcall(require, "CopilotChat")
-	if ok and chat then
-		chat.open()
-	else
-		vim.notify("CopilotChat not installed", vim.log.levels.WARN)
-	end
-end, { desc = "CopilotChat open" })
-
-map("n", "<leader>ct", function()
-	local ok, chat = pcall(require, "CopilotChat")
-	if ok and chat then
-		chat.toggle()
-	else
-		vim.notify("CopilotChat not installed", vim.log.levels.WARN)
-	end
-end, { desc = "CopilotChat toggle" })
-
-map("n", "<leader>cp", function()
-	local ok, chat = pcall(require, "CopilotChat")
-	if ok and chat then
-		chat.select_prompt()
-	else
-		vim.notify("CopilotChat not installed", vim.log.levels.WARN)
-	end
-end, { desc = "CopilotChat select prompt" })
-
-map("n", "<leader>cr", function()
-	local ok, chat = pcall(require, "CopilotChat")
-	if ok and chat then
-		chat.reset()
-	else
-		vim.notify("CopilotChat not installed", vim.log.levels.WARN)
-	end
-end, { desc = "CopilotChat reset" })
+-- -- Copilot Chat keymaps (safe: only calls when plugin available)
+-- map("n", "<leader>cc", function()
+-- 	local ok, chat = pcall(require, "CopilotChat")
+-- 	if ok and chat then
+-- 		chat.open()
+-- 	else
+-- 		vim.notify("CopilotChat not installed", vim.log.levels.WARN)
+-- 	end
+-- end, { desc = "CopilotChat open" })
+--
+-- map("n", "<leader>ct", function()
+-- 	local ok, chat = pcall(require, "CopilotChat")
+-- 	if ok and chat then
+-- 		chat.toggle()
+-- 	else
+-- 		vim.notify("CopilotChat not installed", vim.log.levels.WARN)
+-- 	end
+-- end, { desc = "CopilotChat toggle" })
+--
+-- map("n", "<leader>cp", function()
+-- 	local ok, chat = pcall(require, "CopilotChat")
+-- 	if ok and chat then
+-- 		chat.select_prompt()
+-- 	else
+-- 		vim.notify("CopilotChat not installed", vim.log.levels.WARN)
+-- 	end
+-- end, { desc = "CopilotChat select prompt" })
+--
+-- map("n", "<leader>cr", function()
+-- 	local ok, chat = pcall(require, "CopilotChat")
+-- 	if ok and chat then
+-- 		chat.reset()
+-- 	else
+-- 		vim.notify("CopilotChat not installed", vim.log.levels.WARN)
+-- 	end
+-- end, { desc = "CopilotChat reset" })

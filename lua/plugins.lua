@@ -358,6 +358,15 @@ require("mini.clue").setup({
 		{ mode = "n", keys = "<Leader>ptp", desc = "Typst preview" },
 		{ mode = "n", keys = "<Leader>pts", desc = "Typst preview stop" },
 		{ mode = "n", keys = "<Leader>ptt", desc = "Typst preview toggle" },
+		-- Opencode hints
+		{ mode = "n", keys = "<Leader>o", desc = "+Opencode" },
+		{ mode = "n", keys = "<Leader>oa", desc = "Ask opencode" },
+		{ mode = "n", keys = "<Leader>os", desc = "Select opencode action" },
+		{ mode = "n", keys = "<Leader>ot", desc = "Toggle opencode" },
+		{ mode = "n", keys = "<Leader>oo", desc = "Opencode operator" },
+		{ mode = "n", keys = "<Leader>ool", desc = "Opencode line" },
+		{ mode = "n", keys = "<Leader>ou", desc = "Scroll opencode up" },
+		{ mode = "n", keys = "<Leader>od", desc = "Scroll opencode down" },
 	},
 })
 
@@ -425,25 +434,31 @@ require("kanban").setup({
 -- -----------------------------------------------------------------------------
 -- Typst Preview
 -- -----------------------------------------------------------------------------
+
 require("typst-preview").setup({
 	dependencies_bin = {
 		["tinymist"] = "tinymist", -- Use Mason-installed tinymist
 	},
 })
+-- -----------------------------------------------------------------------------
+-- snacks.nvim (dependency for opencode.nvim ask/select/terminal)
+-- -----------------------------------------------------------------------------
+require("snacks").setup({
+	input = {},
+	picker = {},
+	terminal = {},
+})
 
 -- -----------------------------------------------------------------------------
--- Copilot Chat (CopilotC-Nvim/CopilotChat.nvim)
+-- opencode.nvim configuration for Neovim 0.12+
+-- See: https://github.com/nickjvandyke/opencode.nvim
 -- -----------------------------------------------------------------------------
-local ok, CopilotChat = pcall(require, "CopilotChat")
-if ok and CopilotChat then
-	CopilotChat.setup({
-		-- model = "gpt-4.1",
-		auto_insert_mode = false,
-		window = {
-			layout = "vertical", -- use a vertical split (appears on the right)
-			width = 0.4,
-			border = "rounded",
-			title = "🤖 Copilot",
-		},
-	})
-end
+vim.o.autoread = true -- Required for opts.events.reload
+
+---@type opencode.Opts
+vim.g.opencode_opts = {
+	-- Configuration options: see lua/opencode/config.lua
+	provider = {
+		enabled = "snacks", -- Use snacks provider (recommended with snacks.nvim)
+	},
+}
