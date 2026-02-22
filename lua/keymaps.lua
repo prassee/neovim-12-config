@@ -49,7 +49,7 @@ end
 -- =============================================================================
 -- General: Saving & Quitting
 -- =============================================================================
-map({ "n", "i" }, "<leader>s", "<Esc><cmd>w<CR>", { desc = "Save", nowait = true })
+map("n", "<leader>s", "<Esc><cmd>w<CR>", { desc = "Save", nowait = true })
 map("n", "<leader>q", ":wqall<CR>", { desc = "Quit all" })
 map("n", "<leader>S", "<cmd>source %<CR>", { desc = "Source current file" })
 map("n", "<leader>Q", ":qall!<CR>", { desc = "Force quit all" })
@@ -272,11 +272,46 @@ end
 -- Opencode: <leader>o
 -- =============================================================================
 local opencode_maps = {
-	{ { "n", "x" }, "oa", function() require("opencode").ask("@this: ", { submit = true }) end, "Ask opencode" },
-	{ { "n", "x" }, "os", function() require("opencode").select() end, "Select opencode action" },
-	{ { "n", "t" }, "ot", function() require("opencode").toggle() end, "Toggle opencode" },
-	{ { "n", "x" }, "oo", function() return require("opencode").operator("@this ") end, { expr = true, desc = "Opencode operator" } },
-	{ "n", "ool", function() return require("opencode").operator("@this ") .. "_" end, { expr = true, desc = "Opencode line" } },
+	{
+		{ "n", "x" },
+		"oa",
+		function()
+			require("opencode").ask("@this: ", { submit = true })
+		end,
+		"Ask opencode",
+	},
+	{
+		{ "n", "x" },
+		"os",
+		function()
+			require("opencode").select()
+		end,
+		"Select opencode action",
+	},
+	{
+		{ "n", "t" },
+		"ot",
+		function()
+			require("opencode").toggle()
+		end,
+		"Toggle opencode",
+	},
+	{
+		{ "n", "x" },
+		"oo",
+		function()
+			return require("opencode").operator("@this ")
+		end,
+		{ expr = true, desc = "Opencode operator" },
+	},
+	{
+		"n",
+		"ool",
+		function()
+			return require("opencode").operator("@this ") .. "_"
+		end,
+		{ expr = true, desc = "Opencode line" },
+	},
 }
 for _, km in ipairs(opencode_maps) do
 	local modes = km[1]
@@ -291,8 +326,12 @@ for _, km in ipairs(opencode_maps) do
 	map(modes, lhs, rhs, opts)
 end
 
-map("n", "<leader>ou", function() require("opencode").command("session.half.page.up") end, { desc = "Scroll opencode up" })
-map("n", "<leader>od", function() require("opencode").command("session.half.page.down") end, { desc = "Scroll opencode down" })
+map("n", "<leader>ou", function()
+	require("opencode").command("session.half.page.up")
+end, { desc = "Scroll opencode up" })
+map("n", "<leader>od", function()
+	require("opencode").command("session.half.page.down")
+end, { desc = "Scroll opencode down" })
 
 -- =============================================================================
 -- PyREPL
