@@ -466,6 +466,11 @@ vim.g.opencode_opts = {
 -- -----------------------------------------------------------------------------
 -- Python REPL (pyrepl.nvim)
 -- -----------------------------------------------------------------------------
+
+require("image").setup({
+	backend = "sixel",
+})
+
 require("pyrepl").setup({
 	vim_opts = {
 		hidden = true, -- start in hidden buffer
