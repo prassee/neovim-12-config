@@ -263,6 +263,17 @@ local plugin_maps = {
 	{ "ptp", "<cmd>TypstPreview<CR>", "Typst preview" },
 	{ "pts", "<cmd>TypstPreviewStop<CR>", "Typst preview stop" },
 	{ "ptt", "<cmd>TypstPreviewToggle<CR>", "Typst preview toggle" },
+	{
+		"pd",
+		function()
+			vim.ui.input({ prompt = "Plugin to delete: " }, function(input)
+				if input then
+					vim.pack.delete(input)
+				end
+			end)
+		end,
+		"Delete plugin",
+	},
 }
 for _, km in ipairs(plugin_maps) do
 	map("n", "<leader>" .. km[1], km[2], { desc = km[3] })
@@ -368,40 +379,3 @@ map(
 	'copilot#Accept("\\<S-Tab>")',
 	{ expr = true, replace_keycodes = false, desc = "Copilot accept suggestion" }
 )
-
--- -- Copilot Chat keymaps (safe: only calls when plugin available)
--- map("n", "<leader>cc", function()
--- 	local ok, chat = pcall(require, "CopilotChat")
--- 	if ok and chat then
--- 		chat.open()
--- 	else
--- 		vim.notify("CopilotChat not installed", vim.log.levels.WARN)
--- 	end
--- end, { desc = "CopilotChat open" })
---
--- map("n", "<leader>ct", function()
--- 	local ok, chat = pcall(require, "CopilotChat")
--- 	if ok and chat then
--- 		chat.toggle()
--- 	else
--- 		vim.notify("CopilotChat not installed", vim.log.levels.WARN)
--- 	end
--- end, { desc = "CopilotChat toggle" })
---
--- map("n", "<leader>cp", function()
--- 	local ok, chat = pcall(require, "CopilotChat")
--- 	if ok and chat then
--- 		chat.select_prompt()
--- 	else
--- 		vim.notify("CopilotChat not installed", vim.log.levels.WARN)
--- 	end
--- end, { desc = "CopilotChat select prompt" })
---
--- map("n", "<leader>cr", function()
--- 	local ok, chat = pcall(require, "CopilotChat")
--- 	if ok and chat then
--- 		chat.reset()
--- 	else
--- 		vim.notify("CopilotChat not installed", vim.log.levels.WARN)
--- 	end
--- end, { desc = "CopilotChat reset" })

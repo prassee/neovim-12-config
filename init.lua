@@ -71,6 +71,7 @@ vim.diagnostic.config({
 	},
 })
 
+
 -- -----------------------------------------------------------------------------
 -- Pack Command
 -- -----------------------------------------------------------------------------
@@ -137,7 +138,6 @@ vim.pack.add({
 	"https://github.com/akinsho/toggleterm.nvim",
 	"https://github.com/viniciusteixeiradias/kanban.nvim",
 	"https://github.com/github/copilot.vim",
-	"https://github.com/CopilotC-Nvim/CopilotChat.nvim",
 	"https://github.com/numToStr/Comment.nvim",
 	"https://github.com/lewis6991/gitsigns.nvim",
 	"https://github.com/chomosuke/typst-preview.nvim",

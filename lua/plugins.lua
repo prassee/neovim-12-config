@@ -221,7 +221,7 @@ vim.lsp.config("tinymist", {
 -- -----------------------------------------------------------------------------
 -- Completion (blink.cmp)
 -- -----------------------------------------------------------------------------
-vim.opt.completeopt = { "menu", "menuone", "noselect", "popup" } -- enable popup completion for CopilotChat
+vim.opt.completeopt = { "menu", "menuone", "noselect", "popup" }
 
 require("blink.cmp").setup({
 	keymap = {
@@ -249,13 +249,6 @@ require("blink.cmp").setup({
 	},
 })
 
--- Ensure CopilotChat prompt buffers get popup completion
-vim.api.nvim_create_autocmd("BufEnter", {
-	pattern = "copilot-*",
-	callback = function()
-		vim.opt_local.completeopt = { "menu", "menuone", "noselect", "popup" }
-	end,
-})
 
 -- -----------------------------------------------------------------------------
 -- Comment
