@@ -462,3 +462,17 @@ vim.g.opencode_opts = {
 		enabled = "snacks", -- Use snacks provider (recommended with snacks.nvim)
 	},
 }
+
+-- -----------------------------------------------------------------------------
+-- Python REPL (pyrepl.nvim)
+-- -----------------------------------------------------------------------------
+require("pyrepl").setup({
+	vim_opts = {
+		hidden = true, -- start in hidden buffer
+	},
+	image_provider = "image",
+	cell_pattern = "^# %%%%.*$",
+	python_path = "python",
+	preferred_kernel = "python3",
+	jupytext_hook = true,
+})

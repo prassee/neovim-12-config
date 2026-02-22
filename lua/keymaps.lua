@@ -295,6 +295,27 @@ map("n", "<leader>ou", function() require("opencode").command("session.half.page
 map("n", "<leader>od", function() require("opencode").command("session.half.page.down") end, { desc = "Scroll opencode down" })
 
 -- =============================================================================
+-- PyREPL
+-- =============================================================================
+local pyrepl = require("pyrepl")
+vim.keymap.set("n", "<leader>jo", pyrepl.open_repl, { desc = "Open REPL" })
+vim.keymap.set("n", "<leader>jh", pyrepl.hide_repl, { desc = "Hide REPL" })
+vim.keymap.set("n", "<leader>jc", pyrepl.close_repl, { desc = "Close REPL" })
+vim.keymap.set("n", "<leader>ji", pyrepl.open_image_history, { desc = "Open image history" })
+vim.keymap.set({ "n", "t" }, "<C-j>", pyrepl.toggle_repl_focus, { desc = "Toggle REPL focus" })
+
+-- send commands
+vim.keymap.set("n", "<leader>jb", pyrepl.send_buffer, { desc = "Send buffer to REPL" })
+vim.keymap.set("n", "<leader>jl", pyrepl.send_cell, { desc = "Send cell to REPL" })
+vim.keymap.set("v", "<leader>jv", pyrepl.send_visual, { desc = "Send selection to REPL" })
+
+-- utility commands
+vim.keymap.set("n", "<leader>jp", pyrepl.step_cell_backward, { desc = "Step cell backward" })
+vim.keymap.set("n", "<leader>jn", pyrepl.step_cell_forward, { desc = "Step cell forward" })
+vim.keymap.set("n", "<leader>je", pyrepl.export_to_notebook, { desc = "Export to notebook" })
+vim.keymap.set("n", "<leader>js", ":PyreplInstall<CR>", { desc = "Install Pyrepl dependencies" })
+
+-- =============================================================================
 -- File Explorer: Oil
 -- =============================================================================
 map("n", "-", "<cmd>Oil<cr>", { desc = "File explorer (Oil)" })
