@@ -5,34 +5,42 @@
 -- -----------------------------------------------------------------------------
 -- Colorscheme
 -- -----------------------------------------------------------------------------
-vim.cmd.colorscheme("catppuccin")
+pcall(vim.cmd, "colorscheme catppuccin")
 
 -- -----------------------------------------------------------------------------
 -- Treesitter
 -- -----------------------------------------------------------------------------
--- Enable treesitter highlighting when parser is available, fallback to vim syntax
-vim.api.nvim_create_autocmd("FileType", {
-	callback = function()
-		pcall(vim.treesitter.start)
-	end,
-})
+-- Prefer configuring nvim-treesitter via its setup table
+local ok_ts, ts_configs = pcall(require, "nvim-treesitter.configs")
+if ok_ts then
+	ts_configs.setup({
+		ensure_installed = { "lua", "go", "python", "json", "yaml", "toml", "markdown", "bash", "rust", "typescript" },
+		highlight = { enable = true, additional_vim_regex_highlighting = false },
+		indent = { enable = true },
+	})
+end
 
 -- -----------------------------------------------------------------------------
 -- Mason & LSP Setup
 -- -----------------------------------------------------------------------------
-require("mason").setup()
-require("mason-lspconfig").setup()
-require("mason-tool-installer").setup({
-	ensure_installed = {
-		"lua_ls",
-		"stylua",
-		"pyrefly",
-		"gopls",
-		"yaml-language-server",
-		"prettier",
-		"tinymist",
-	},
-})
+local ok_mason, mason = pcall(require, "mason")
+if ok_mason then mason.setup() end
+local ok_mason_lsp, mason_lsp = pcall(require, "mason-lspconfig")
+if ok_mason_lsp then mason_lsp.setup() end
+local ok_mti, mti = pcall(require, "mason-tool-installer")
+if ok_mti then
+	mti.setup({
+		ensure_installed = {
+			"lua_ls",
+			"stylua",
+			"pyrefly",
+			"gopls",
+			"yaml-language-server",
+			"prettier",
+			"tinymist",
+		},
+	})
+end
 
 vim.lsp.enable({ "lua_ls", "gopls", "pyrefly", "dockerls", "taplo", "jsonls", "marksman", "yamlls", "tinymist" })
 vim.lsp.inlay_hint.enable(true)
