@@ -49,9 +49,8 @@ vim.lsp.inlay_hint.enable(true)
 -- LSP Server Configurations
 -- -----------------------------------------------------------------------------
 vim.lsp.config("lua_ls", {
-	cmd = { "lua-language-server" },
-	filetypes = { "lua" },
-	root_markers = { { ".luarc.json", ".luarc.jsonc" }, ".git" },
+    filetypes = { "lua" },
+    root_markers = { { ".luarc.json", ".luarc.jsonc" }, ".git" },
 	settings = {
 		Lua = {
 			workspace = {
@@ -67,10 +66,9 @@ vim.lsp.config("lua_ls", {
 	},
 })
 
-	vim.lsp.config("gopls", {
-		cmd = { "gopls" },
-		filetypes = { "go", "gomod", "gowork", "gotmpl", "gosum" },
-		root_markers = { "go.mod", "go.work", ".git" },
+vim.lsp.config("gopls", {
+    filetypes = { "go", "gomod", "gowork", "gotmpl", "gosum" },
+    root_markers = { "go.mod", "go.work", ".git" },
 		settings = {
 			gopls = {
 				gofumpt = true,
@@ -103,64 +101,58 @@ vim.lsp.config("lua_ls", {
 })
 
 vim.lsp.config("dockerls", {
-	cmd = { "docker-langserver", "--stdio" },
-	filetypes = { "dockerfile" },
-	root_markers = { "Dockerfile", "Containerfile", ".git" },
-	single_file_support = true,
+    filetypes = { "dockerfile" },
+    root_markers = { "Dockerfile", "Containerfile", ".git" },
+    single_file_support = true,
 })
 
 vim.lsp.config("taplo", {
-	cmd = { "taplo", "lsp", "stdio" },
-	filetypes = { "toml" },
-	root_markers = { "*.toml", ".git" },
-	single_file_support = true,
+    filetypes = { "toml" },
+    root_markers = { "*.toml", ".git" },
+    single_file_support = true,
 })
 
 vim.lsp.config("jsonls", {
-	cmd = { "vscode-json-language-server", "--stdio" },
-	filetypes = { "json", "jsonc" },
-	root_markers = { "package.json", ".git" },
-	single_file_support = true,
-	settings = {
-		json = {
-			schemas = require("schemastore").json.schemas(),
-			validate = { enable = true },
-		},
-	},
+    filetypes = { "json", "jsonc" },
+    root_markers = { "package.json", ".git" },
+    single_file_support = true,
+    settings = {
+        json = {
+            schemas = require("schemastore").json.schemas(),
+            validate = { enable = true },
+        },
+    },
 })
 
 vim.lsp.config("marksman", {
-	cmd = { "marksman", "server" },
-	filetypes = { "markdown", "markdown.mdx" },
-	root_markers = { "README.md", ".git" },
-	single_file_support = true,
+    filetypes = { "markdown", "markdown.mdx" },
+    root_markers = { "README.md", ".git" },
+    single_file_support = true,
 })
 
 vim.lsp.config("yamlls", {
-	cmd = { "yaml-language-server", "--stdio" },
-	filetypes = { "yaml", "yaml.docker-compose", "yaml.gitlab" },
-	root_markers = { ".git" },
-	single_file_support = true,
-	settings = {
-		yaml = {
-			schemas = require("schemastore").yaml.schemas(),
-			validate = true,
-			schemaStore = {
-				enable = false, -- Disable built-in schemaStore to use schemastore.nvim
-				url = "",
-			},
-		},
-	},
+    filetypes = { "yaml", "yaml.docker-compose", "yaml.gitlab" },
+    root_markers = { ".git" },
+    single_file_support = true,
+    settings = {
+        yaml = {
+            schemas = require("schemastore").yaml.schemas(),
+            validate = true,
+            schemaStore = {
+                enable = false, -- Disable built-in schemaStore to use schemastore.nvim
+                url = "",
+            },
+        },
+    },
 })
 
 vim.lsp.config("tinymist", {
-	cmd = { "tinymist" },
-	filetypes = { "typst" },
-	root_markers = { ".git", "main.typ" },
-	single_file_support = true,
-	settings = {
-		formatterMode = "typstfmt",
-	},
+    filetypes = { "typst" },
+    root_markers = { ".git", "main.typ" },
+    single_file_support = true,
+    settings = {
+        formatterMode = "typstfmt",
+    },
 })
 
 -- -----------------------------------------------------------------------------
