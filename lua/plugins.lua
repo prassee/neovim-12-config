@@ -59,95 +59,32 @@ vim.lsp.config("lua_ls", {
 	},
 })
 
-vim.lsp.config("gopls", {
-	cmd = { "gopls" },
-	filetypes = { "go", "gomod", "gowork", "gotmpl", "gosum" },
-	root_markers = { "go.mod", "go.work", ".git" },
-	settings = {
-		gopls = {
-			gofumpt = true,
-			codelenses = {
-				gc_details = false,
-				generate = true,
-				regenerate_cgo = true,
-				run_govulncheck = true,
-				test = true,
-				tidy = true,
-				upgrade_dependency = true,
-				vendor = true,
-			},
-			hints = {
-				assignVariableTypes = true,
-				compositeLiteralFields = true,
-				compositeLiteralTypes = true,
-				constantValues = true,
-				functionTypeParameters = true,
-				parameterNames = true,
-				rangeVariableTypes = true,
-			},
-			analyses = {
-				nilness = true,
-				unusedparams = true,
-				unusedwrite = true,
-				useany = true,
-				unreachable = true,
-				modernize = true,
-				stylecheck = true,
-				appends = true,
-				asmdecl = true,
-				assign = true,
-				atomic = true,
-				bools = true,
-				buildtag = true,
-				cgocall = true,
-				composite = true,
-				contextcheck = true,
-				deba = true,
-				atomicalign = true,
-				composites = true,
-				copylocks = true,
-				deepequalerrors = true,
-				defers = true,
-				deprecated = true,
-				directive = true,
-				embed = true,
-				errorsas = true,
-				fillreturns = true,
-				framepointer = true,
-				gofix = true,
-				hostport = true,
-				infertypeargs = true,
-				lostcancel = true,
-				httpresponse = true,
-				ifaceassert = true,
-				loopclosure = true,
-				nilfunc = true,
-				nonewvars = true,
-				noresultvalues = true,
-				printf = true,
-				shadow = true,
-				shift = true,
-				sigchanyzer = true,
-				simplifycompositelit = true,
-				simplifyrange = true,
-				simplifyslice = true,
-				slog = true,
-				sortslice = true,
-				stdmethods = true,
-				stdversion = true,
-				stringintconv = true,
-				structtag = true,
-				testinggoroutine = true,
-				tests = true,
-				timeformat = true,
-				unmarshal = true,
-				unsafeptr = true,
-				unusedfunc = true,
-				unusedresult = true,
-				waitgroup = true,
-				yield = true,
-				unusedvariable = true,
-			},
+	vim.lsp.config("gopls", {
+		cmd = { "gopls" },
+		filetypes = { "go", "gomod", "gowork", "gotmpl", "gosum" },
+		root_markers = { "go.mod", "go.work", ".git" },
+		settings = {
+			gopls = {
+				gofumpt = true,
+				codelenses = {
+					gc_details = false,
+					generate = true,
+					regenerate_cgo = true,
+					run_govulncheck = true,
+					test = true,
+					tidy = true,
+					upgrade_dependency = true,
+					vendor = true,
+				},
+				hints = {
+					assignVariableTypes = true,
+					compositeLiteralFields = true,
+					compositeLiteralTypes = true,
+					constantValues = true,
+					functionTypeParameters = true,
+					parameterNames = true,
+					rangeVariableTypes = true,
+				},
 			usePlaceholders = true,
 			completeUnimported = true,
 			staticcheck = true,
@@ -249,7 +186,6 @@ require("blink.cmp").setup({
 	},
 })
 
-
 -- -----------------------------------------------------------------------------
 -- Comment
 -- -----------------------------------------------------------------------------
@@ -260,7 +196,7 @@ require("Comment").setup()
 -- -----------------------------------------------------------------------------
 require("conform").setup({
 	format_on_save = {
-		timeout_ms = 500,
+		timeout_ms = 2000,
 		lsp_format = "fallback",
 	},
 	formatters_by_ft = {
@@ -449,10 +385,30 @@ require("snacks").setup({
 vim.o.autoread = true -- Required for opts.events.reload
 
 ---@type opencode.Opts
+local opencode_cmd = "opencode --port"
+---@type snacks.terminal.Opts
+local snacks_terminal_opts = {
+	win = {
+		position = "right",
+		enter = false,
+		on_win = function(win)
+			require("opencode.terminal").setup(win.win)
+		end,
+	},
+}
+
+---@type opencode.Opts
 vim.g.opencode_opts = {
-	-- Configuration options: see lua/opencode/config.lua
-	provider = {
-		enabled = "snacks", -- Use snacks provider (recommended with snacks.nvim)
+	server = {
+		start = function()
+			require("snacks.terminal").open(opencode_cmd, snacks_terminal_opts)
+		end,
+		stop = function()
+			require("snacks.terminal").get(opencode_cmd, snacks_terminal_opts):close()
+		end,
+		toggle = function()
+			require("snacks.terminal").toggle(opencode_cmd, snacks_terminal_opts)
+		end,
 	},
 }
 
@@ -460,15 +416,11 @@ vim.g.opencode_opts = {
 -- Python REPL (pyrepl.nvim)
 -- -----------------------------------------------------------------------------
 
-require("image").setup({
-	backend = "sixel",
-})
-
 require("pyrepl").setup({
 	vim_opts = {
 		hidden = true, -- start in hidden buffer
 	},
-	image_provider = "image",
+	image_provider = "placeholders",
 	cell_pattern = "^# %%%%.*$",
 	python_path = "python",
 	preferred_kernel = "python3",
