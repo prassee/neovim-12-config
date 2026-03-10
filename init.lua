@@ -71,7 +71,6 @@ vim.diagnostic.config({
 	},
 })
 
-
 -- -----------------------------------------------------------------------------
 -- Pack Command
 -- -----------------------------------------------------------------------------
@@ -141,7 +140,6 @@ vim.pack.add({
 	"https://github.com/numToStr/Comment.nvim",
 	"https://github.com/lewis6991/gitsigns.nvim",
 	"https://github.com/chomosuke/typst-preview.nvim",
-	"https://github.com/3rd/image.nvim",
 	"https://github.com/dangooddd/pyrepl.nvim",
 })
 
