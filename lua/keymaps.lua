@@ -371,6 +371,36 @@ map("n", "<leader>js", ":PyreplInstall<CR>", { desc = "Install Pyrepl dependenci
 map("n", "-", "<cmd>Oil<cr>", { desc = "File explorer (Oil)" })
 
 -- =============================================================================
+-- Agentic: <leader>m (keeps <leader>a for line navigation)
+-- =============================================================================
+local agentic_maps = {
+  -- { modes, suffix, rhs, description }
+  { { "n", "v", "i" }, "ma", function() require("agentic").toggle() end, "Toggle Agentic Chat" },
+  { { "n", "v" }, "mc", function() require("agentic").add_selection_or_file_to_context() end, "Add selection/file to Agentic context" },
+  { { "n", "v", "i" }, "mn", function() require("agentic").new_session() end, "New Agentic session" },
+  { "n", "mr", function() require("agentic").restore_session() end, "Restore Agentic session" },
+  { "n", "md", function() require("agentic").add_current_line_diagnostics() end, "Add current line diagnostics to Agentic" },
+  { "n", "mD", function() require("agentic").add_buffer_diagnostics() end, "Add buffer diagnostics to Agentic" },
+  { "n", "mf", function() require("agentic").add_file() end, "Add current file to Agentic context" },
+  { "n", "ms", function() require("agentic").switch_provider() end, "Switch Agentic provider" },
+  { "n", "mR", function() require("agentic").rotate_layout() end, "Rotate Agentic layout" },
+  { "n", "mx", function() require("agentic").stop_generation() end, "Stop Agentic generation" },
+}
+
+for _, km in ipairs(agentic_maps) do
+  local modes = km[1]
+  local lhs = "<leader>" .. km[2]
+  local rhs = km[3]
+  local opts = km[4]
+  if type(opts) == "string" then
+    opts = { desc = opts }
+  else
+    opts.desc = opts.desc or "Agentic"
+  end
+  map(modes, lhs, rhs, opts)
+end
+
+-- =============================================================================
 -- Copilot
 -- =============================================================================
 map(

@@ -24,9 +24,13 @@ end
 -- Mason & LSP Setup
 -- -----------------------------------------------------------------------------
 local ok_mason, mason = pcall(require, "mason")
-if ok_mason then mason.setup() end
+if ok_mason then
+	mason.setup()
+end
 local ok_mason_lsp, mason_lsp = pcall(require, "mason-lspconfig")
-if ok_mason_lsp then mason_lsp.setup() end
+if ok_mason_lsp then
+	mason_lsp.setup()
+end
 local ok_mti, mti = pcall(require, "mason-tool-installer")
 if ok_mti then
 	mti.setup({
@@ -49,8 +53,8 @@ vim.lsp.inlay_hint.enable(true)
 -- LSP Server Configurations
 -- -----------------------------------------------------------------------------
 vim.lsp.config("lua_ls", {
-    filetypes = { "lua" },
-    root_markers = { { ".luarc.json", ".luarc.jsonc" }, ".git" },
+	filetypes = { "lua" },
+	root_markers = { { ".luarc.json", ".luarc.jsonc" }, ".git" },
 	settings = {
 		Lua = {
 			workspace = {
@@ -67,30 +71,30 @@ vim.lsp.config("lua_ls", {
 })
 
 vim.lsp.config("gopls", {
-    filetypes = { "go", "gomod", "gowork", "gotmpl", "gosum" },
-    root_markers = { "go.mod", "go.work", ".git" },
-		settings = {
-			gopls = {
-				gofumpt = true,
-				codelenses = {
-					gc_details = false,
-					generate = true,
-					regenerate_cgo = true,
-					run_govulncheck = true,
-					test = true,
-					tidy = true,
-					upgrade_dependency = true,
-					vendor = true,
-				},
-				hints = {
-					assignVariableTypes = true,
-					compositeLiteralFields = true,
-					compositeLiteralTypes = true,
-					constantValues = true,
-					functionTypeParameters = true,
-					parameterNames = true,
-					rangeVariableTypes = true,
-				},
+	filetypes = { "go", "gomod", "gowork", "gotmpl", "gosum" },
+	root_markers = { "go.mod", "go.work", ".git" },
+	settings = {
+		gopls = {
+			gofumpt = true,
+			codelenses = {
+				gc_details = false,
+				generate = true,
+				regenerate_cgo = true,
+				run_govulncheck = true,
+				test = true,
+				tidy = true,
+				upgrade_dependency = true,
+				vendor = true,
+			},
+			hints = {
+				assignVariableTypes = true,
+				compositeLiteralFields = true,
+				compositeLiteralTypes = true,
+				constantValues = true,
+				functionTypeParameters = true,
+				parameterNames = true,
+				rangeVariableTypes = true,
+			},
 			usePlaceholders = true,
 			completeUnimported = true,
 			staticcheck = true,
@@ -101,58 +105,58 @@ vim.lsp.config("gopls", {
 })
 
 vim.lsp.config("dockerls", {
-    filetypes = { "dockerfile" },
-    root_markers = { "Dockerfile", "Containerfile", ".git" },
-    single_file_support = true,
+	filetypes = { "dockerfile" },
+	root_markers = { "Dockerfile", "Containerfile", ".git" },
+	single_file_support = true,
 })
 
 vim.lsp.config("taplo", {
-    filetypes = { "toml" },
-    root_markers = { "*.toml", ".git" },
-    single_file_support = true,
+	filetypes = { "toml" },
+	root_markers = { "*.toml", ".git" },
+	single_file_support = true,
 })
 
 vim.lsp.config("jsonls", {
-    filetypes = { "json", "jsonc" },
-    root_markers = { "package.json", ".git" },
-    single_file_support = true,
-    settings = {
-        json = {
-            schemas = require("schemastore").json.schemas(),
-            validate = { enable = true },
-        },
-    },
+	filetypes = { "json", "jsonc" },
+	root_markers = { "package.json", ".git" },
+	single_file_support = true,
+	settings = {
+		json = {
+			schemas = require("schemastore").json.schemas(),
+			validate = { enable = true },
+		},
+	},
 })
 
 vim.lsp.config("marksman", {
-    filetypes = { "markdown", "markdown.mdx" },
-    root_markers = { "README.md", ".git" },
-    single_file_support = true,
+	filetypes = { "markdown", "markdown.mdx" },
+	root_markers = { "README.md", ".git" },
+	single_file_support = true,
 })
 
 vim.lsp.config("yamlls", {
-    filetypes = { "yaml", "yaml.docker-compose", "yaml.gitlab" },
-    root_markers = { ".git" },
-    single_file_support = true,
-    settings = {
-        yaml = {
-            schemas = require("schemastore").yaml.schemas(),
-            validate = true,
-            schemaStore = {
-                enable = false, -- Disable built-in schemaStore to use schemastore.nvim
-                url = "",
-            },
-        },
-    },
+	filetypes = { "yaml", "yaml.docker-compose", "yaml.gitlab" },
+	root_markers = { ".git" },
+	single_file_support = true,
+	settings = {
+		yaml = {
+			schemas = require("schemastore").yaml.schemas(),
+			validate = true,
+			schemaStore = {
+				enable = false, -- Disable built-in schemaStore to use schemastore.nvim
+				url = "",
+			},
+		},
+	},
 })
 
 vim.lsp.config("tinymist", {
-    filetypes = { "typst" },
-    root_markers = { ".git", "main.typ" },
-    single_file_support = true,
-    settings = {
-        formatterMode = "typstfmt",
-    },
+	filetypes = { "typst" },
+	root_markers = { ".git", "main.typ" },
+	single_file_support = true,
+	settings = {
+		formatterMode = "typstfmt",
+	},
 })
 
 -- -----------------------------------------------------------------------------
@@ -425,4 +429,18 @@ require("pyrepl").setup({
 	python_path = "python",
 	preferred_kernel = "python3",
 	jupytext_hook = true,
+})
+
+-- ------
+-- Agentic.nvim
+-- ------
+require("agentic").setup({
+	-- agentic.setup expects the config table directly (not an `opts` wrapper).
+	provider = "opencode-acp",
+	windows = {
+		position = "right", -- "right", "left", or "bottom"
+		width = "40%", -- Sidebar width (position = "right" or "left")
+		height = "30%", -- Panel height (position = "bottom")
+	},
+	-- Keybindings moved to lua/keymaps.lua to keep global mappings consistent
 })

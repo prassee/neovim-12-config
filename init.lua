@@ -101,6 +101,7 @@ vim.pack.add({
 	"https://github.com/nvim-mini/mini.surround",
 	"https://github.com/folke/snacks.nvim", -- Required for opencode.nvim ask()/select()
 	"https://github.com/nickjvandyke/opencode.nvim",
+	"https://github.com/carlos-algms/agentic.nvim",
 })
 
 -- -----------------------------------------------------------------------------
