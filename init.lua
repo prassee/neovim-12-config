@@ -6,6 +6,7 @@
 -- Leader & Global Variables
 -- -----------------------------------------------------------------------------
 vim.g.mapleader = " " -- Set space as the leader key for custom mappings
+vim.g.maplocalleader = "\\"
 vim.g.have_nerd_font = true -- Indicate that a Nerd Font is available for icons
 vim.g.copilot_no_tab_map = true -- Disable default Copilot tab mapping to avoid conflicts
 vim.opt.clipboard = "unnamedplus" -- Use system clipboard for all operations
@@ -99,8 +100,8 @@ vim.pack.add({
 	"https://github.com/rafamadriz/friendly-snippets",
 	"https://github.com/nvim-mini/mini.clue",
 	"https://github.com/nvim-mini/mini.surround",
-	"https://github.com/folke/snacks.nvim", -- Required for opencode.nvim ask()/select()
-	"https://github.com/nickjvandyke/opencode.nvim",
+	-- "https://github.com/folke/snacks.nvim", -- Required for opencode.nvim ask()/select()
+	-- "https://github.com/nickjvandyke/opencode.nvim",
 	"https://github.com/carlos-algms/agentic.nvim",
 })
 

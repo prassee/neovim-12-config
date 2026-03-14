@@ -292,14 +292,14 @@ require("mini.clue").setup({
 		{ mode = "n", keys = "<Leader>pts", desc = "Typst preview stop" },
 		{ mode = "n", keys = "<Leader>ptt", desc = "Typst preview toggle" },
 		-- Opencode hints
-		{ mode = "n", keys = "<Leader>o", desc = "+Opencode" },
-		{ mode = "n", keys = "<Leader>oa", desc = "Ask opencode" },
-		{ mode = "n", keys = "<Leader>os", desc = "Select opencode action" },
-		{ mode = "n", keys = "<Leader>ot", desc = "Toggle opencode" },
-		{ mode = "n", keys = "<Leader>oo", desc = "Opencode operator" },
-		{ mode = "n", keys = "<Leader>ool", desc = "Opencode line" },
-		{ mode = "n", keys = "<Leader>ou", desc = "Scroll opencode up" },
-		{ mode = "n", keys = "<Leader>od", desc = "Scroll opencode down" },
+		-- { mode = "n", keys = "<Leader>o", desc = "+Opencode" },
+		-- { mode = "n", keys = "<Leader>oa", desc = "Ask opencode" },
+		-- { mode = "n", keys = "<Leader>os", desc = "Select opencode action" },
+		-- { mode = "n", keys = "<Leader>ot", desc = "Toggle opencode" },
+		-- { mode = "n", keys = "<Leader>oo", desc = "Opencode operator" },
+		-- { mode = "n", keys = "<Leader>ool", desc = "Opencode line" },
+		-- { mode = "n", keys = "<Leader>ou", desc = "Scroll opencode up" },
+		-- { mode = "n", keys = "<Leader>od", desc = "Scroll opencode down" },
 	},
 })
 
@@ -376,11 +376,11 @@ require("typst-preview").setup({
 -- -----------------------------------------------------------------------------
 -- snacks.nvim (dependency for opencode.nvim ask/select/terminal)
 -- -----------------------------------------------------------------------------
-require("snacks").setup({
-	input = {},
-	picker = {},
-	terminal = {},
-})
+-- require("snacks").setup({
+-- input = {},
+-- picker = {},
+-- terminal = {},
+-- })
 
 -- -----------------------------------------------------------------------------
 -- opencode.nvim configuration for Neovim 0.12+
@@ -389,32 +389,32 @@ require("snacks").setup({
 vim.o.autoread = true -- Required for opts.events.reload
 
 ---@type opencode.Opts
-local opencode_cmd = "opencode --port"
----@type snacks.terminal.Opts
-local snacks_terminal_opts = {
-	win = {
-		position = "right",
-		enter = false,
-		on_win = function(win)
-			require("opencode.terminal").setup(win.win)
-		end,
-	},
-}
+-- local opencode_cmd = "opencode --port"
+-- ---@type snacks.terminal.Opts
+-- local snacks_terminal_opts = {
+-- 	win = {
+-- 		position = "right",
+-- 		enter = false,
+-- 		on_win = function(win)
+-- 			require("opencode.terminal").setup(win.win)
+-- 		end,
+-- 	},
+-- }
 
 ---@type opencode.Opts
-vim.g.opencode_opts = {
-	server = {
-		start = function()
-			require("snacks.terminal").open(opencode_cmd, snacks_terminal_opts)
-		end,
-		stop = function()
-			require("snacks.terminal").get(opencode_cmd, snacks_terminal_opts):close()
-		end,
-		toggle = function()
-			require("snacks.terminal").toggle(opencode_cmd, snacks_terminal_opts)
-		end,
-	},
-}
+-- vim.g.opencode_opts = {
+-- 	server = {
+-- 		start = function()
+-- 			require("snacks.terminal").open(opencode_cmd, snacks_terminal_opts)
+-- 		end,
+-- 		stop = function()
+-- 			require("snacks.terminal").get(opencode_cmd, snacks_terminal_opts):close()
+-- 		end,
+-- 		toggle = function()
+-- 			require("snacks.terminal").toggle(opencode_cmd, snacks_terminal_opts)
+-- 		end,
+-- 	},
+-- }
 
 -- -----------------------------------------------------------------------------
 -- Python REPL (pyrepl.nvim)
