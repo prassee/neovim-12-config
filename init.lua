@@ -9,6 +9,7 @@ vim.g.mapleader = " " -- Set space as the leader key for custom mappings
 vim.g.maplocalleader = "\\"
 vim.g.have_nerd_font = true -- Indicate that a Nerd Font is available for icons
 vim.g.copilot_no_tab_map = true -- Disable default Copilot tab mapping to avoid conflicts
+vim.g.copilot_filetypes = { AgenticInput = false } -- Disable Copilot on agentic.nvim prompt input
 vim.opt.clipboard = "unnamedplus" -- Use system clipboard for all operations
 
 -- -----------------------------------------------------------------------------
