@@ -122,7 +122,10 @@ vim.lsp.config("jsonls", {
 	single_file_support = true,
 	settings = {
 		json = {
-			schemas = require("schemastore").json.schemas(),
+			schemas = (function()
+				local ok, schemastore = pcall(require, "schemastore")
+				return ok and schemastore.json.schemas() or {}
+			end)(),
 			validate = { enable = true },
 		},
 	},
@@ -140,7 +143,10 @@ vim.lsp.config("yamlls", {
 	single_file_support = true,
 	settings = {
 		yaml = {
-			schemas = require("schemastore").yaml.schemas(),
+			schemas = (function()
+				local ok, schemastore = pcall(require, "schemastore")
+				return ok and schemastore.yaml.schemas() or {}
+			end)(),
 			validate = true,
 			schemaStore = {
 				enable = false, -- Disable built-in schemaStore to use schemastore.nvim
@@ -261,6 +267,8 @@ require("mini.clue").setup({
 	triggers = {
 		{ mode = "n", keys = "<Leader>" },
 		{ mode = "x", keys = "<Leader>" },
+		{ mode = "n", keys = "<LocalLeader>" },
+		{ mode = "x", keys = "<LocalLeader>" },
 		{ mode = "i", keys = "<C-x>" },
 		{ mode = "n", keys = "g" },
 		{ mode = "x", keys = "g" },
@@ -277,6 +285,11 @@ require("mini.clue").setup({
 		{ mode = "x", keys = "z" },
 	},
 	clues = {
+		-- Environment Info hints
+		{ mode = "n", keys = "<LocalLeader>ei", desc = "+Environment Info" },
+		{ mode = "n", keys = "<LocalLeader>eia", desc = "Add environment info" },
+		{ mode = "n", keys = "<LocalLeader>eiv", desc = "View environment info" },
+		{ mode = "n", keys = "<LocalLeader>eic", desc = "Clear environment info" },
 		-- Surround hints
 		{ mode = "n", keys = "gsa", desc = "Add surrounding" },
 		{ mode = "n", keys = "gsd", desc = "Delete surrounding" },
@@ -291,15 +304,6 @@ require("mini.clue").setup({
 		{ mode = "n", keys = "<Leader>ptp", desc = "Typst preview" },
 		{ mode = "n", keys = "<Leader>pts", desc = "Typst preview stop" },
 		{ mode = "n", keys = "<Leader>ptt", desc = "Typst preview toggle" },
-		-- Opencode hints
-		-- { mode = "n", keys = "<Leader>o", desc = "+Opencode" },
-		-- { mode = "n", keys = "<Leader>oa", desc = "Ask opencode" },
-		-- { mode = "n", keys = "<Leader>os", desc = "Select opencode action" },
-		-- { mode = "n", keys = "<Leader>ot", desc = "Toggle opencode" },
-		-- { mode = "n", keys = "<Leader>oo", desc = "Opencode operator" },
-		-- { mode = "n", keys = "<Leader>ool", desc = "Opencode line" },
-		-- { mode = "n", keys = "<Leader>ou", desc = "Scroll opencode up" },
-		-- { mode = "n", keys = "<Leader>od", desc = "Scroll opencode down" },
 	},
 })
 
@@ -373,48 +377,6 @@ require("typst-preview").setup({
 		["tinymist"] = "tinymist", -- Use Mason-installed tinymist
 	},
 })
--- -----------------------------------------------------------------------------
--- snacks.nvim (dependency for opencode.nvim ask/select/terminal)
--- -----------------------------------------------------------------------------
--- require("snacks").setup({
--- input = {},
--- picker = {},
--- terminal = {},
--- })
-
--- -----------------------------------------------------------------------------
--- opencode.nvim configuration for Neovim 0.12+
--- See: https://github.com/nickjvandyke/opencode.nvim
--- -----------------------------------------------------------------------------
-vim.o.autoread = true -- Required for opts.events.reload
-
----@type opencode.Opts
--- local opencode_cmd = "opencode --port"
--- ---@type snacks.terminal.Opts
--- local snacks_terminal_opts = {
--- 	win = {
--- 		position = "right",
--- 		enter = false,
--- 		on_win = function(win)
--- 			require("opencode.terminal").setup(win.win)
--- 		end,
--- 	},
--- }
-
----@type opencode.Opts
--- vim.g.opencode_opts = {
--- 	server = {
--- 		start = function()
--- 			require("snacks.terminal").open(opencode_cmd, snacks_terminal_opts)
--- 		end,
--- 		stop = function()
--- 			require("snacks.terminal").get(opencode_cmd, snacks_terminal_opts):close()
--- 		end,
--- 		toggle = function()
--- 			require("snacks.terminal").toggle(opencode_cmd, snacks_terminal_opts)
--- 		end,
--- 	},
--- }
 
 -- -----------------------------------------------------------------------------
 -- Python REPL (pyrepl.nvim)
@@ -425,7 +387,7 @@ require("pyrepl").setup({
 		hidden = true, -- start in hidden buffer
 	},
 	image_provider = "placeholders",
-	cell_pattern = "^# %%%%.*$",
+	cell_pattern = "^# %%.*$",
 	python_path = "python",
 	preferred_kernel = "python3",
 	jupytext_hook = true,
