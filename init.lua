@@ -5,8 +5,11 @@
 -- -----------------------------------------------------------------------------
 -- Leader & Global Variables
 -- -----------------------------------------------------------------------------
-vim.g.mapleader = "\\" -- Set backslash as the leader key for custom mappings
+vim.g.mapleader = " " -- Set space as the leader key for custom mappings
 vim.g.maplocalleader = "\\"
+vim.opt.timeoutlen = 50
+-- Prevent <Space> from moving the cursor in normal/visual mode (avoids timeoutlen delay)
+vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 vim.g.have_nerd_font = true -- Indicate that a Nerd Font is available for icons
 vim.g.copilot_no_tab_map = true -- Disable default Copilot tab mapping to avoid conflicts
 vim.g.copilot_filetypes = { AgenticInput = false } -- Disable Copilot on agentic.nvim prompt input
