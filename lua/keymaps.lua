@@ -408,9 +408,6 @@ end
 -- =============================================================================
 -- Copilot
 -- =============================================================================
-map(
-	"i",
-	"<S-Tab>",
-	'copilot#Accept("\\<S-Tab>")',
-	{ expr = true, replace_keycodes = false, desc = "Copilot accept suggestion" }
-)
+vim.keymap.set("i", "<S-Tab>", function()
+	vim.cmd([[call copilot#Accept("")]])
+end, { expr = true, desc = "Copilot accept suggestion" })

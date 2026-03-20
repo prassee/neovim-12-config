@@ -37,6 +37,8 @@ vim.opt.inccommand = "split"
 
 vim.opt.wrap = true
 vim.opt.breakindent = true
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 
 vim.opt.expandtab = true
 vim.opt.autoindent = true

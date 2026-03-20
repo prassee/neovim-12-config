@@ -10,15 +10,21 @@ pcall(vim.cmd, "colorscheme catppuccin")
 -- -----------------------------------------------------------------------------
 -- Treesitter
 -- -----------------------------------------------------------------------------
--- Prefer configuring nvim-treesitter via its setup table
 local ok_ts, ts_configs = pcall(require, "nvim-treesitter.configs")
 if ok_ts then
 	ts_configs.setup({
 		ensure_installed = { "lua", "go", "python", "json", "yaml", "toml", "markdown", "bash", "rust", "typescript" },
 		highlight = { enable = true, additional_vim_regex_highlighting = false },
 		indent = { enable = true },
+		fold = { enable = true, foldlevel = 99 },
 	})
 end
+
+-- -----------------------------------------------------------------------------
+-- Snippets (LuaSnip + friendly-snippets)
+-- -----------------------------------------------------------------------------
+require("luasnip.loaders.from_vscode").lazy_load()
+require("luasnip.loaders.from_snipmate").lazy_load()
 
 -- -----------------------------------------------------------------------------
 -- Mason & LSP Setup
@@ -41,6 +47,8 @@ if ok_mti then
 			"gopls",
 			"yaml-language-server",
 			"prettier",
+			"yamlfmt",
+			"shfmt",
 			"tinymist",
 		},
 	})
@@ -48,6 +56,7 @@ end
 
 vim.lsp.enable({ "lua_ls", "gopls", "pyrefly", "dockerls", "taplo", "jsonls", "marksman", "yamlls", "tinymist" })
 vim.lsp.inlay_hint.enable(true)
+vim.lsp.format_on_save.enable(true)
 
 -- -----------------------------------------------------------------------------
 -- LSP Server Configurations
@@ -219,6 +228,10 @@ require("conform").setup({
 		html = { "djlint" },
 		javascript = { "prettier" },
 		yaml = { "prettier" },
+		["yaml.docker-compose"] = { "yamlfmt" },
+		sh = { "shfmt" },
+		bash = { "shfmt" },
+		zsh = { "shfmt" },
 	},
 })
 
@@ -333,19 +346,13 @@ require("toggleterm").setup({
 -- -----------------------------------------------------------------------------
 -- Git Signs (gitsigns.nvim)
 -- -----------------------------------------------------------------------------
+vim.g.gitsigns_heads = "+~_-"
 require("gitsigns").setup({
-	current_line_blame = false, -- Toggle with :Gitsigns toggle_current_line_blame
+	current_line_blame = false,
 	current_line_blame_opts = {
 		virt_text = true,
 		virt_text_pos = "eol",
 		delay = 300,
-	},
-	signs = {
-		add = { text = "+" },
-		change = { text = "~" },
-		delete = { text = "_" },
-		topdelete = { text = "-" },
-		changedelete = { text = "~" },
 	},
 })
 
