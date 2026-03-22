@@ -16,7 +16,7 @@ if ok_ts then
 		ensure_installed = { "lua", "go", "python", "json", "yaml", "toml", "markdown", "bash", "rust", "typescript" },
 		highlight = { enable = true, additional_vim_regex_highlighting = false },
 		indent = { enable = true },
-		fold = { enable = true, foldlevel = 99 },
+
 	})
 end
 
@@ -56,7 +56,6 @@ end
 
 vim.lsp.enable({ "lua_ls", "gopls", "pyrefly", "dockerls", "taplo", "jsonls", "marksman", "yamlls", "tinymist" })
 vim.lsp.inlay_hint.enable(true)
-vim.lsp.format_on_save.enable(true)
 
 -- -----------------------------------------------------------------------------
 -- LSP Server Configurations
@@ -355,6 +354,11 @@ require("gitsigns").setup({
 		delay = 300,
 	},
 })
+
+-- -----------------------------------------------------------------------------
+-- Neogit
+-- -----------------------------------------------------------------------------
+require("neogit").setup({})
 
 -- -----------------------------------------------------------------------------
 -- Kanban

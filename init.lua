@@ -37,8 +37,7 @@ vim.opt.inccommand = "split"
 
 vim.opt.wrap = true
 vim.opt.breakindent = true
-vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldmethod = "manual"
 
 vim.opt.expandtab = true
 vim.opt.autoindent = true
@@ -140,6 +139,8 @@ vim.pack.add({
 	"https://github.com/github/copilot.vim",
 	"https://github.com/numToStr/Comment.nvim",
 	"https://github.com/lewis6991/gitsigns.nvim",
+	"https://github.com/NeogitOrg/neogit",
+	"https://github.com/nvim-lua/plenary.nvim",
 	"https://github.com/chomosuke/typst-preview.nvim",
 	"https://github.com/dangooddd/pyrepl.nvim",
 })
