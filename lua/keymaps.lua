@@ -166,6 +166,9 @@ end
 map("n", "]h", "<cmd>Gitsigns next_hunk<CR>", { desc = "Next hunk" })
 map("n", "[h", "<cmd>Gitsigns prev_hunk<CR>", { desc = "Previous hunk" })
 
+-- Neogit
+map("n", "<leader>ng", "<cmd>Neogit<CR>", { desc = "Open Neogit" })
+
 -- =============================================================================
 -- LSP: <leader>l
 -- =============================================================================
