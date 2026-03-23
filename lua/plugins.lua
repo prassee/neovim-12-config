@@ -357,18 +357,13 @@ require("gitsigns").setup({
 -- -----------------------------------------------------------------------------
 -- Neogit
 -- -----------------------------------------------------------------------------
-require("neogit").setup({})
+require("neogit").setup()
 
-vim.api.nvim_create_autocmd("BufEnter", {
-	pattern = "COMMIT_EDITMSG",
+vim.api.nvim_create_autocmd("Filetype", {
+	pattern = { "COMMIT_EDITMSG", "NeogitCommitMessage" },
 	callback = function()
-		vim.keymap.set("i", "<leader>cc", function()
-			vim.cmd("write")
-			vim.cmd("bdelete!")
-		end, { buffer = true, desc = "Submit commit" })
-		vim.keymap.set("i", "<leader>cq", function()
-			vim.cmd("bdelete!")
-		end, { buffer = true, desc = "Abort commit" })
+		vim.keymap.set("i", "<F5>", "<Esc>:wq<CR>", { buffer = true, desc = "Commit" })
+		vim.keymap.set("i", "<F6>", "<Esc>:qa!<CR>", { buffer = true, desc = "Abort commit" })
 	end,
 })
 
