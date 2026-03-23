@@ -361,12 +361,14 @@ require("neogit").setup({
 	commit_editor = {
 		kind = "floating",
 	},
-	keybindings = {
-		commit_editor = {
-			["<leader>cc"] = "Submit",
-			["<leader>cq"] = "Abort",
-		},
-	},
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "NeogitCommitMessage",
+	callback = function()
+		vim.keymap.set("i", "<leader>cc", "<cmd>wq<CR>", { buffer = true, desc = "Commit" })
+		vim.keymap.set("i", "<leader>cq", "<cmd>q!<CR>", { buffer = true, desc = "Abort commit" })
+	end,
 })
 
 -- -----------------------------------------------------------------------------
