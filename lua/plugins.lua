@@ -16,7 +16,6 @@ if ok_ts then
 		ensure_installed = { "lua", "go", "python", "json", "yaml", "toml", "markdown", "bash", "rust", "typescript" },
 		highlight = { enable = true, additional_vim_regex_highlighting = false },
 		indent = { enable = true },
-
 	})
 end
 
@@ -358,7 +357,11 @@ require("gitsigns").setup({
 -- -----------------------------------------------------------------------------
 -- Neogit
 -- -----------------------------------------------------------------------------
-require("neogit").setup({})
+require("neogit").setup({
+	commit_editor = {
+		kind = "floating", -- or "split", "vsplit", "tab"
+	},
+})
 
 -- -----------------------------------------------------------------------------
 -- Kanban

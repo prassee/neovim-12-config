@@ -16,7 +16,6 @@ local Terminal = require("toggleterm.terminal").Terminal
 -- =============================================================================
 -- Terminal Instances
 -- =============================================================================
-local lazygit = Terminal:new({ cmd = "lazygit", direction = "float", hidden = true })
 local thoth = Terminal:new({ cmd = "thoth", direction = "float", hidden = true })
 
 -- =============================================================================
@@ -38,10 +37,6 @@ local function format_buffer()
 end
 
 -- Terminal toggles
-local function toggle_lazygit()
-	lazygit:toggle()
-end
-
 local function toggle_thoth()
 	thoth:toggle()
 end
@@ -249,7 +244,6 @@ local terminal_maps = {
 	{ "tt", ":ToggleTerm direction=float<CR>", "Toggle terminal" },
 	{ "th", ":ToggleTerm direction=horizontal<CR>", "Terminal horizontal" },
 	{ "tv", ":ToggleTerm direction=vertical<CR>", "Terminal vertical" },
-	{ "tg", toggle_lazygit, "Lazygit" },
 	{ "to", toggle_thoth, "Thoth" },
 }
 for _, km in ipairs(terminal_maps) do
