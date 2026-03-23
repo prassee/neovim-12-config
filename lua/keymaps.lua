@@ -163,8 +163,8 @@ map("n", "[h", "<cmd>Gitsigns prev_hunk<CR>", { desc = "Previous hunk" })
 
 -- Neogit
 map("n", "<leader>ng", "<cmd>Neogit<CR>", { desc = "Open Neogit" })
-map("n", "<leader>nc", "<cmd>Neogit commit<CR>", { desc = "Neogit commit" })
-map("n", "<leader>np", "<cmd>Neogit push<CR>", { desc = "Neogit push" })
+-- map("n", "<leader>nc", "<cmd>Neogit commit<CR>", { desc = "Neogit commit" })
+-- map("n", "<leader>np", "<cmd>Neogit push<CR>", { desc = "Neogit push" })
 
 -- =============================================================================
 -- LSP: <leader>l
