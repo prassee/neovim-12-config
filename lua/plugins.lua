@@ -359,7 +359,13 @@ require("gitsigns").setup({
 -- -----------------------------------------------------------------------------
 require("neogit").setup({
 	commit_editor = {
-		kind = "floating", -- or "split", "vsplit", "tab"
+		kind = "floating",
+	},
+	keybindings = {
+		commit_editor = {
+			["<leader>cc"] = "Submit",
+			["<leader>cq"] = "Abort",
+		},
 	},
 })
 
