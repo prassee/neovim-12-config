@@ -357,13 +357,47 @@ require("gitsigns").setup({
 -- -----------------------------------------------------------------------------
 -- Neogit
 -- -----------------------------------------------------------------------------
-require("neogit").setup()
+require("neogit").setup({
+	commit_editor = {
+		kind = "tab",
+	},
+	disable_insert_on_commit = true,
+	commit = {
+		signoff = false,
+		verify_commit = vim.fn.executable("gpg") == 1,
+	},
+})
 
-vim.api.nvim_create_autocmd("Filetype", {
-	pattern = { "COMMIT_EDITMSG", "NeogitCommitMessage" },
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "NeogitCommitMessage", "gitcommit" },
 	callback = function()
-		vim.keymap.set("i", "<F5>", "<Esc>:wq<CR>", { buffer = true, desc = "Commit" })
-		vim.keymap.set("i", "<F6>", "<Esc>:qa!<CR>", { buffer = true, desc = "Abort commit" })
+		local opts = { buffer = true, silent = true }
+		vim.keymap.set("n", "<F5>", ":wq<CR>", opts)
+		vim.keymap.set("n", "<F6>", ":qa!<CR>", opts)
+		vim.keymap.set("n", "<F7>", function()
+			local staged_diff = vim.fn.system("git diff --cached --stat")
+			if vim.v.shell_error ~= 0 then
+				vim.notify("No staged changes found", vim.log.levels.WARN)
+				return
+			end
+			local files = vim.split(staged_diff, "\n", { trimempty = true })
+			local file_list = {}
+			for _, f in ipairs(files) do
+				if f:match("^[a-zA-Z]") and not f:match("^%d+") then
+					table.insert(file_list, f)
+				end
+			end
+			if #file_list > 5 then
+				file_list = { file_list[1], file_list[2], "... (" .. (#file_list - 4) .. " more)" }
+			end
+			local prompt = "Based on these changes ("
+				.. table.concat(file_list, ", ")
+				.. "), write a concise conventional commit message (type: description)"
+			vim.api.nvim_put({ prompt }, "a", true, true)
+			vim.defer_fn(function()
+				vim.api.nvim_feedkeys("<Tab>", "i", true)
+			end, 150)
+		end, { buffer = true, desc = "Generate commit message" })
 	end,
 })
 
