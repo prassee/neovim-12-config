@@ -405,6 +405,13 @@ end
 -- =============================================================================
 -- Copilot
 -- =============================================================================
-vim.keymap.set("i", "<S-Tab>", function()
-	vim.cmd([[call copilot#Accept("")]])
-end, { expr = true, desc = "Copilot accept suggestion" })
+vim.keymap.set("i", "<S-Tab>", 'copilot#Accept("\\<S-Tab>")', {
+	expr = true,
+	replace_keycodes = false,
+	desc = "Copilot accept suggestion",
+})
+vim.keymap.set("i", "<C-l>", 'copilot#Accept("\\<CR>")', {
+	expr = true,
+	replace_keycodes = false,
+	desc = "Copilot accept suggestion (alt)",
+})
