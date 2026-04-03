@@ -260,6 +260,8 @@ fzf.register_ui_select()
 require("lualine").setup({
 	options = {
 		theme = "auto",
+		component_separators = { left = "", right = "" },
+		section_separators = { left = "", right = "" },
 	},
 	sections = {
 		lualine_a = { "mode" },
@@ -297,10 +299,10 @@ require("mini.clue").setup({
 	},
 	clues = {
 		-- Environment Info hints
-		{ mode = "n", keys = "<LocalLeader>ei", desc = "+Environment Info" },
-		{ mode = "n", keys = "<LocalLeader>eia", desc = "Add environment info" },
-		{ mode = "n", keys = "<LocalLeader>eiv", desc = "View environment info" },
-		{ mode = "n", keys = "<LocalLeader>eic", desc = "Clear environment info" },
+		-- { mode = "n", keys = "<LocalLeader>ei", desc = "+Environment Info" },
+		-- { mode = "n", keys = "<LocalLeader>eia", desc = "Add environment info" },
+		-- { mode = "n", keys = "<LocalLeader>eiv", desc = "View environment info" },
+		-- { mode = "n", keys = "<LocalLeader>eic", desc = "Clear environment info" },
 		-- Surround hints
 		{ mode = "n", keys = "gsa", desc = "Add surrounding" },
 		{ mode = "n", keys = "gsd", desc = "Delete surrounding" },
