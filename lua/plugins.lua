@@ -369,8 +369,8 @@ vim.api.nvim_create_autocmd("FileType", {
 	callback = function()
 		local opts = { buffer = true, silent = true, desc = "Save and close" }
 		local abort_opts = { buffer = true, silent = true, desc = "Abort commit" }
-		vim.keymap.set("n", "<leader>cc", ":wq<CR>", opts)
-		vim.keymap.set("n", "<leader>ca", function()
+		vim.keymap.set("n", "gcc", ":wq<CR>", opts)
+		vim.keymap.set("n", "gca", function()
 			vim.cmd("bd!")
 		end, abort_opts)
 	end,
