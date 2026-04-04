@@ -370,28 +370,39 @@ vim.api.nvim_create_autocmd("FileType", {
 		local opts = { buffer = true, silent = true }
 		vim.keymap.set("n", "<F5>", ":wq<CR>", opts)
 		vim.keymap.set("n", "<F6>", ":qa!<CR>", opts)
-		vim.keymap.set("n", "<F7>", function()
-			local staged_diff = vim.fn.system("git diff --cached")
-			if vim.v.shell_error ~= 0 then
-				vim.notify("No staged changes found", vim.log.levels.WARN)
-				return
-			end
-			local prompt = "Based on these changes:\n```\n" .. staged_diff .. "\n```\n\nWrite a concise conventional commit message (type: description)"
-			vim.api.nvim_put({ prompt }, "c", true, true)
-			vim.defer_fn(function()
-				vim.api.nvim_feedkeys("<Tab>", "i", true)
-			end, 150)
-		end, { buffer = true, desc = "Generate commit message" })
-
-		local staged_diff = vim.fn.system("git diff --cached")
-		if vim.v.shell_error ~= 0 then
-			return
-		end
-		local prompt = "Based on these changes:\n```\n" .. staged_diff .. "\n```\n\nWrite a concise conventional commit message (type: description)"
-		vim.api.nvim_put({ prompt }, "c", true, true)
-		vim.defer_fn(function()
-			vim.api.nvim_feedkeys("<Tab>", "i", true)
-		end, 200)
+		-- vim.keymap.set("n", "<F7>", function()
+		-- 	local staged_diff = vim.fn.system("git diff --cached")
+		-- 	if vim.v.shell_error ~= 0 then
+		-- 		vim.notify("No staged changes found", vim.log.levels.WARN)
+		-- 		return
+		-- 	end
+		-- 	local diff_lines = vim.split(staged_diff, "\n")
+		-- 	local short_diff = table.concat(vim.list_slice(diff_lines, 1, math.min(50, #diff_lines)), "\n")
+		-- 	if #diff_lines > 50 then
+		-- 		short_diff = short_diff .. "\n... (truncated)"
+		-- 	end
+		-- 	local prompt = "Generate a conventional commit message (e.g. 'feat: add login feature'). Changes:\n" .. short_diff
+		-- 	vim.api.nvim_put({ prompt }, "c", true, true)
+		-- 	vim.defer_fn(function()
+		-- 		vim.api.nvim_feedkeys("<Tab>", "i", true)
+		-- 	end, 150)
+		-- end, { buffer = true, desc = "Generate commit message" })
+		--
+		-- local staged_diff = vim.fn.system("git diff --cached")
+		-- if vim.v.shell_error ~= 0 then
+		-- 	return
+		-- end
+		-- local diff_lines = vim.split(staged_diff, "\n")
+		-- local short_diff = table.concat(vim.list_slice(diff_lines, 1, math.min(50, #diff_lines)), "\n")
+		-- if #diff_lines > 50 then
+		-- 	short_diff = short_diff .. "\n... (truncated)"
+		-- end
+		-- local prompt = "Generate a conventional commit message (e.g. 'feat: add login feature'). Changes:\n"
+		-- 	.. short_diff
+		-- vim.api.nvim_put({ prompt }, "c", true, true)
+		-- vim.defer_fn(function()
+		-- 	vim.api.nvim_feedkeys("<Tab>", "i", true)
+		-- end, 200)
 	end,
 })
 
