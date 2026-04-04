@@ -364,13 +364,7 @@ require("neogit").setup({
 	},
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = { "NeogitCommitMessage", "gitcommit" },
-	callback = function()
-		vim.keymap.set({ "n", "i" }, "S", ":wq<CR>", { buffer = true, silent = true, desc = "Save and close" })
-		vim.keymap.set("n", "Q", ":bd!<CR>", { buffer = true, silent = true, desc = "Abort commit" })
-	end,
-})
+require("copilot-commit-message")
 
 -- -----------------------------------------------------------------------------
 -- Python REPL (pyrepl.nvim)
