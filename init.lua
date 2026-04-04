@@ -18,8 +18,6 @@ vim.g.copilot_filetypes = { AgenticInput = false, lua = true, go = true, python 
 -- Disable Copilot on agentic.nvim prompt input
 vim.opt.clipboard = "unnamedplus" -- Use system clipboard for all operations
 
--- declare a simple function
-
 -- -----------------------------------------------------------------------------
 -- Line Numbers
 -- -----------------------------------------------------------------------------

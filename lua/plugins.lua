@@ -13,11 +13,60 @@ pcall(vim.cmd, "colorscheme catppuccin")
 local ok_ts, ts_configs = pcall(require, "nvim-treesitter.configs")
 if ok_ts then
 	ts_configs.setup({
-		ensure_installed = { "lua", "go", "python", "json", "yaml", "toml", "markdown", "bash", "rust", "typescript" },
+		ensure_installed = {
+			"lua",
+			"go",
+			"python",
+			"json",
+			"yaml",
+			"toml",
+			"markdown",
+			"bash",
+			"rust",
+			"typescript",
+			"rust",
+			"dockerfile",
+		},
 		highlight = { enable = true, additional_vim_regex_highlighting = false },
 		indent = { enable = true },
 	})
 end
+
+vim.keymap.set({ "x", "o" }, "an", function()
+	if vim.treesitter.get_parser() then
+		require("vim.treesitter._select").select_parent(vim.v.count1)
+	else
+		vim.lsp.buf.selection_range(vim.v.count1)
+	end
+end, { desc = "Select parent treesitter node" })
+
+vim.keymap.set({ "x", "o" }, "in", function()
+	if vim.treesitter.get_parser() then
+		require("vim.treesitter._select").select_child(vim.v.count1)
+	else
+		vim.lsp.buf.selection_range(-vim.v.count1)
+	end
+end, { desc = "Select child treesitter node" })
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = {
+		"lua",
+		"go",
+		"python",
+		"rust",
+		"javascript",
+		"typescript",
+		"json",
+		"yaml",
+		"toml",
+		"markdown",
+		"bash",
+	},
+	callback = function()
+		vim.treesitter.start()
+	end,
+	desc = "Enable treesitter for supported filetypes",
+})
 
 -- -----------------------------------------------------------------------------
 -- Snippets (LuaSnip + friendly-snippets)
