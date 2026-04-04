@@ -367,12 +367,8 @@ require("neogit").setup({
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "NeogitCommitMessage", "gitcommit" },
 	callback = function()
-		local opts = { buffer = true, silent = true, desc = "Save and close" }
-		local abort_opts = { buffer = true, silent = true, desc = "Abort commit" }
-		vim.keymap.set("n", "gcc", ":wq<CR>", opts)
-		vim.keymap.set("n", "gca", function()
-			vim.cmd("bd!")
-		end, abort_opts)
+		vim.keymap.set({ "n", "i" }, "S", ":wq<CR>", { buffer = true, silent = true, desc = "Save and close" })
+		vim.keymap.set("n", "Q", ":bd!<CR>", { buffer = true, silent = true, desc = "Abort commit" })
 	end,
 })
 
