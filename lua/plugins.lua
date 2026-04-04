@@ -48,13 +48,13 @@ if ok_mti then
 			"prettier",
 			"yamlfmt",
 			"shfmt",
-			"tinymist",
 		},
 	})
 end
 
-vim.lsp.enable({ "lua_ls", "gopls", "pyrefly", "dockerls", "taplo", "jsonls", "marksman", "yamlls", "tinymist" })
+vim.lsp.enable({ "lua_ls", "gopls", "pyrefly", "dockerls", "taplo", "jsonls", "marksman", "yamlls" })
 vim.lsp.inlay_hint.enable(true)
+vim.lsp.codelens.enable()
 
 -- -----------------------------------------------------------------------------
 -- LSP Server Configurations
@@ -163,20 +163,10 @@ vim.lsp.config("yamlls", {
 	},
 })
 
-vim.lsp.config("tinymist", {
-	filetypes = { "typst" },
-	root_markers = { ".git", "main.typ" },
-	single_file_support = true,
-	settings = {
-		formatterMode = "typstfmt",
-	},
-})
-
 -- -----------------------------------------------------------------------------
 -- Completion (blink.cmp)
 -- -----------------------------------------------------------------------------
 vim.opt.completeopt = { "menu", "menuone", "noselect", "popup" }
-
 require("blink.cmp").setup({
 	keymap = {
 		["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
@@ -257,6 +247,7 @@ fzf.register_ui_select()
 -- -----------------------------------------------------------------------------
 -- Statusline (lualine)
 -- -----------------------------------------------------------------------------
+---@diagnostic disable-next-line: undefined-field
 require("lualine").setup({
 	options = {
 		theme = "auto",
@@ -267,9 +258,17 @@ require("lualine").setup({
 		lualine_a = { "mode" },
 		lualine_b = { "branch", "diff", "diagnostics" },
 		lualine_c = { "filename" },
-		lualine_x = { "encoding", "fileformat", "filetype", "lsp_status" },
+		lualine_x = { "encoding", "fileformat", "filetype", { "lsp_status", show_name = false } },
 		lualine_y = { "progress" },
 		lualine_z = { "location" },
+	},
+	inactive_sections = {
+		lualine_a = {},
+		lualine_b = {},
+		lualine_c = { "filename" },
+		lualine_x = { "location" },
+		lualine_y = {},
+		lualine_z = {},
 	},
 })
 
@@ -312,11 +311,6 @@ require("mini.clue").setup({
 		{ mode = "n", keys = "gsh", desc = "Highlight surrounding" },
 		{ mode = "n", keys = "gsn", desc = "Update n_lines" },
 		{ mode = "x", keys = "gsa", desc = "Add surrounding" },
-		-- Typst Preview hints
-		{ mode = "n", keys = "<Leader>pt", desc = "+Typst Preview" },
-		{ mode = "n", keys = "<Leader>ptp", desc = "Typst preview" },
-		{ mode = "n", keys = "<Leader>pts", desc = "Typst preview stop" },
-		{ mode = "n", keys = "<Leader>ptt", desc = "Typst preview toggle" },
 	},
 })
 
@@ -377,59 +371,28 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.keymap.set("n", "<F5>", ":wq<CR>", opts)
 		vim.keymap.set("n", "<F6>", ":qa!<CR>", opts)
 		vim.keymap.set("n", "<F7>", function()
-			local staged_diff = vim.fn.system("git diff --cached --stat")
+			local staged_diff = vim.fn.system("git diff --cached")
 			if vim.v.shell_error ~= 0 then
 				vim.notify("No staged changes found", vim.log.levels.WARN)
 				return
 			end
-			local files = vim.split(staged_diff, "\n", { trimempty = true })
-			local file_list = {}
-			for _, f in ipairs(files) do
-				if f:match("^[a-zA-Z]") and not f:match("^%d+") then
-					table.insert(file_list, f)
-				end
-			end
-			if #file_list > 5 then
-				file_list = { file_list[1], file_list[2], "... (" .. (#file_list - 4) .. " more)" }
-			end
-			local prompt = "Based on these changes ("
-				.. table.concat(file_list, ", ")
-				.. "), write a concise conventional commit message (type: description)"
-			vim.api.nvim_put({ prompt }, "a", true, true)
+			local prompt = "Based on these changes:\n```\n" .. staged_diff .. "\n```\n\nWrite a concise conventional commit message (type: description)"
+			vim.api.nvim_put({ prompt }, "c", true, true)
 			vim.defer_fn(function()
 				vim.api.nvim_feedkeys("<Tab>", "i", true)
 			end, 150)
 		end, { buffer = true, desc = "Generate commit message" })
+
+		local staged_diff = vim.fn.system("git diff --cached")
+		if vim.v.shell_error ~= 0 then
+			return
+		end
+		local prompt = "Based on these changes:\n```\n" .. staged_diff .. "\n```\n\nWrite a concise conventional commit message (type: description)"
+		vim.api.nvim_put({ prompt }, "c", true, true)
+		vim.defer_fn(function()
+			vim.api.nvim_feedkeys("<Tab>", "i", true)
+		end, 200)
 	end,
-})
-
--- -----------------------------------------------------------------------------
--- Kanban
--- -----------------------------------------------------------------------------
-require("kanban").setup({
-	file = {
-		path = nil,
-		name = "TODO.md",
-		create_if_missing = true,
-	},
-	default_columns = { "Backlog", "In Progress", "Done" },
-	window = {
-		width = 0.8,
-		height = 0.6,
-		border = "rounded",
-	},
-	auto_refresh_buffers = true,
-	on_complete_move_to = "Done",
-})
-
--- -----------------------------------------------------------------------------
--- Typst Preview
--- -----------------------------------------------------------------------------
-
-require("typst-preview").setup({
-	dependencies_bin = {
-		["tinymist"] = "tinymist", -- Use Mason-installed tinymist
-	},
 })
 
 -- -----------------------------------------------------------------------------
@@ -454,9 +417,16 @@ require("agentic").setup({
 	-- agentic.setup expects the config table directly (not an `opts` wrapper).
 	provider = "opencode-acp",
 	windows = {
-		position = "right", -- "right", "left", or "bottom"
-		width = "40%", -- Sidebar width (position = "right" or "left")
-		height = "30%", -- Panel height (position = "bottom")
+		position = "right",
+		width = "40%",
+		height = "30%",
+		stack_width_ratio = 0.4,
+		chat = { win_opts = {} },
+		input = { height = 10, win_opts = {} },
+		code = { max_height = 15, win_opts = {} },
+		files = { max_height = 10, win_opts = {} },
+		diagnostics = { max_height = 10, win_opts = {} },
+		todos = { display = true, max_height = 10, win_opts = {} },
 	},
 	-- Keybindings moved to lua/keymaps.lua to keep global mappings consistent
 })

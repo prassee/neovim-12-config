@@ -6,7 +6,7 @@
 --   <leader>f  = Find (fzf-lua search)
 --   <leader>g  = Git (gitsigns + fzf git)
 --   <leader>l  = LSP actions
---   <leader>p  = Plugins (Mason, Pack, Kanban, Typst)
+--   <leader>p  = Plugins (Mason, Pack)
 --   <leader>t  = Terminal / Tools
 --   <leader>w  = Window management
 
@@ -137,8 +137,8 @@ end
 -- =============================================================================
 local git_fzf_maps = {
 	{ "gs", fzf.git_status, "Git status" },
-	{ "gc", fzf.git_commits, "Git commits" },
-	{ "gC", fzf.git_bcommits, "Git buffer commits" },
+	{ "gC", fzf.git_commits, "Git commits" },
+	{ "gH", fzf.git_bcommits, "Git buffer commits" },
 	{ "gb", fzf.git_branches, "Git branches" },
 }
 for _, km in ipairs(git_fzf_maps) do
@@ -191,6 +191,8 @@ local lsp_action_maps = {
 	{ "ln", vim.lsp.buf.rename, "Rename symbol" },
 	{ "lh", vim.lsp.buf.hover, "Hover documentation" },
 	{ "lf", format_buffer, "Format buffer" },
+	{ "lr", vim.lsp.codelens.run, "Run codelens" },
+	{ "lR", vim.lsp.codelens.refresh, "Refresh codelens" },
 }
 for _, km in ipairs(lsp_action_maps) do
 	map("n", "<leader>" .. km[1], km[2], { desc = km[3] })
@@ -256,10 +258,6 @@ map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 local plugin_maps = {
 	{ "pm", "<cmd>Mason<CR>", "Mason" },
 	{ "pu", "<cmd>lua vim.pack.update()<CR>", "Update plugins" },
-	{ "pk", "<cmd>Kanban<CR>", "Kanban board" },
-	{ "ptp", "<cmd>TypstPreview<CR>", "Typst preview" },
-	{ "pts", "<cmd>TypstPreviewStop<CR>", "Typst preview stop" },
-	{ "ptt", "<cmd>TypstPreviewToggle<CR>", "Typst preview toggle" },
 	{
 		"pd",
 		function()
