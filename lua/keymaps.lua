@@ -5,10 +5,13 @@
 --   <leader>b  = Buffers
 --   <leader>f  = Find (fzf-lua search)
 --   <leader>g  = Git (gitsigns + fzf git)
+--   <leader>j  = PyREPL
 --   <leader>l  = LSP actions
+--   <leader>n  = Neogit
 --   <leader>p  = Plugins (Mason, Pack)
 --   <leader>t  = Terminal / Tools
 --   <leader>w  = Window management
+--   <leader>x  = Agentic
 
 local fzf = require("fzf-lua")
 local Terminal = require("toggleterm.terminal").Terminal
@@ -40,6 +43,63 @@ end
 local function toggle_thoth()
 	thoth:toggle()
 end
+
+-- =============================================================================
+-- Git: AI Commit Message
+-- =============================================================================
+
+local function opencode_ai_commit()
+	local buf_name = vim.api.nvim_buf_get_name(0)
+	local buf_dir = vim.fn.fnamemodify(buf_name, ":p:h")
+	if buf_dir == "" then
+		buf_dir = vim.fn.getcwd()
+	end
+
+	local git_root = vim.fn.system("git -C " .. buf_dir .. " rev-parse --show-toplevel 2>/dev/null")
+
+	if git_root == "" or git_root:match("^fatal") then
+		git_root = vim.fn.getcwd()
+	end
+	git_root = git_root:gsub("%s+", "")
+
+	local diff_output = vim.fn.system("git --git-dir=" .. git_root .. "/.git --work-tree=" .. git_root .. " diff --cached 2>/dev/null")
+
+	if diff_output == "" or diff_output:match("no changes added") then
+		print("Error: No staged changes. Stage files with git add first.")
+		return
+	end
+
+	local prompt = "Given this git diff, write a concise one-line commit message. OUTPUT ONLY TEXT, no quotes:\n\n" .. diff_output
+
+	local cmd = string.format(
+		[[echo '%s' | opencode run - -m opencode/minimax-m2.5-free --format json | jq -rn 'inputs | select(.type == "text") | .part.text']],
+		prompt:gsub("'", "'\\''")
+	)
+
+	print("Generating AI commit message...")
+
+	local msg = vim.fn.system(cmd):gsub("[\n\r]", "")
+
+	if msg ~= "" and msg ~= "null" and #msg > 0 then
+		local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+		vim.api.nvim_buf_set_lines(0, 0, #lines, false, { msg })
+		vim.api.nvim_buf_set_lines(0, 1, #lines + 1, false, {})
+	else
+		print("Error: Could not generate message.")
+	end
+end
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "NeogitCommitMessage", "gitcommit" },
+	callback = function()
+		vim.keymap.set({ "n", "i" }, "S", ":wq<CR>", { buffer = true, silent = true, desc = "Save and close" })
+		vim.keymap.set("n", "Q", ":bd!<CR>", { buffer = true, silent = true, desc = "Abort commit" })
+		vim.keymap.set({ "n", "i" }, "G", function()
+			opencode_ai_commit()
+		end, { buffer = true, desc = "Generate commit message with OpenCode AI" })
+	end,
+	desc = "Setup commit message generation with OpenCode AI",
+})
 
 -- =============================================================================
 -- General: Saving & Quitting
@@ -162,7 +222,7 @@ map("n", "]h", "<cmd>Gitsigns next_hunk<CR>", { desc = "Next hunk" })
 map("n", "[h", "<cmd>Gitsigns prev_hunk<CR>", { desc = "Previous hunk" })
 
 -- Neogit
-map("n", "<leader>ng", "<cmd>Neogit<CR>", { desc = "Open Neogit" })
+map("n", "<leader>n", "<cmd>Neogit<CR>", { desc = "Open Neogit" })
 
 -- =============================================================================
 -- LSP: <leader>l
@@ -191,8 +251,8 @@ local lsp_action_maps = {
 	{ "ln", vim.lsp.buf.rename, "Rename symbol" },
 	{ "lh", vim.lsp.buf.hover, "Hover documentation" },
 	{ "lf", format_buffer, "Format buffer" },
-	{ "lr", vim.lsp.codelens.run, "Run codelens" },
-	{ "lR", vim.lsp.codelens.refresh, "Refresh codelens" },
+	{ "lc", vim.lsp.codelens.run, "Run codelens" },
+	{ "lC", vim.lsp.codelens.refresh, "Refresh codelens" },
 }
 for _, km in ipairs(lsp_action_maps) do
 	map("n", "<leader>" .. km[1], km[2], { desc = km[3] })
@@ -301,13 +361,13 @@ map("n", "<leader>js", ":PyreplInstall<CR>", { desc = "Install Pyrepl dependenci
 map("n", "-", "<cmd>Oil<cr>", { desc = "File explorer (Oil)" })
 
 -- =============================================================================
--- Agentic: <leader>m (keeps <leader>a for line navigation)
+-- Agentic: <leader>x
 -- =============================================================================
 local agentic_maps = {
 	-- { modes, suffix, rhs, description }
 	{
 		{ "n", "v", "i" },
-		"ma",
+		"xa",
 		function()
 			require("agentic").toggle()
 		end,
@@ -315,7 +375,7 @@ local agentic_maps = {
 	},
 	{
 		{ "n", "v" },
-		"mc",
+		"xc",
 		function()
 			require("agentic").add_selection_or_file_to_context()
 		end,
@@ -323,7 +383,7 @@ local agentic_maps = {
 	},
 	{
 		{ "n", "v", "i" },
-		"mn",
+		"xn",
 		function()
 			require("agentic").new_session()
 		end,
@@ -331,7 +391,7 @@ local agentic_maps = {
 	},
 	{
 		"n",
-		"mr",
+		"xr",
 		function()
 			require("agentic").restore_session()
 		end,
@@ -339,7 +399,7 @@ local agentic_maps = {
 	},
 	{
 		"n",
-		"md",
+		"xd",
 		function()
 			require("agentic").add_current_line_diagnostics()
 		end,
@@ -347,7 +407,7 @@ local agentic_maps = {
 	},
 	{
 		"n",
-		"mD",
+		"xD",
 		function()
 			require("agentic").add_buffer_diagnostics()
 		end,
@@ -355,7 +415,7 @@ local agentic_maps = {
 	},
 	{
 		"n",
-		"mf",
+		"xf",
 		function()
 			require("agentic").add_file()
 		end,
@@ -363,7 +423,7 @@ local agentic_maps = {
 	},
 	{
 		"n",
-		"ms",
+		"xs",
 		function()
 			require("agentic").switch_provider()
 		end,
@@ -371,7 +431,7 @@ local agentic_maps = {
 	},
 	{
 		"n",
-		"mR",
+		"xR",
 		function()
 			require("agentic").rotate_layout()
 		end,
@@ -379,7 +439,7 @@ local agentic_maps = {
 	},
 	{
 		"n",
-		"mx",
+		"xx",
 		function()
 			require("agentic").stop_generation()
 		end,
@@ -413,3 +473,31 @@ vim.keymap.set("i", "<C-l>", 'copilot#Accept("\\<CR>")', {
 	replace_keycodes = false,
 	desc = "Copilot accept suggestion (alt)",
 })
+
+-- =============================================================================
+-- Tree-sitter Text Objects (Neovim 0.12+)
+-- =============================================================================
+-- <A-o>  expand selection to parent node (with LSP fallback)
+-- <A-i>  shrink selection to child node  (with LSP fallback)
+-- On macOS, Alt+o sends "ø" and Alt+i sends "ı" — map both to be safe.
+local function ts_parent()
+	local parser = vim.treesitter.get_parser(nil, nil, { error = false })
+	if parser then
+		require("vim.treesitter._select").select_parent(vim.v.count1)
+	else
+		vim.lsp.buf.selection_range(vim.v.count1)
+	end
+end
+local function ts_child()
+	if vim.treesitter.get_parser(nil, nil, { error = false }) then
+		require("vim.treesitter._select").select_child(vim.v.count1)
+	else
+		vim.lsp.buf.selection_range(-vim.v.count1)
+	end
+end
+
+vim.keymap.set({ "n", "x", "o" }, "<A-o>", ts_parent, { desc = "Select parent treesitter node" })
+vim.keymap.set({ "n", "x", "o" }, "ø",     ts_parent, { desc = "Select parent treesitter node (macOS Alt+o)" })
+vim.keymap.set({ "n", "x", "o" }, "<A-i>", ts_child, { desc = "Select child treesitter node" })
+vim.keymap.set({ "n", "x", "o" }, "ı",     ts_child, { desc = "Select child treesitter node (macOS Alt+i)" })
+vim.keymap.set({ "n", "x", "o" }, "ˆ",     ts_child, { desc = "Select child treesitter node (macOS Alt+i fallback)" })
