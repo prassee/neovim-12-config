@@ -1,8 +1,9 @@
 local function opencode_aicommmit()
 	local buf_name = vim.api.nvim_buf_get_name(0)
-	print("DEBUG: buf_name=[" .. buf_name .. "]")
 	local buf_dir = vim.fn.fnamemodify(buf_name, ":p:h")
-	print("DEBUG: buf_dir=[" .. buf_dir .. "]")
+	if buf_dir == "" then
+		buf_dir = vim.fn.getcwd()
+	end
 	
 	local git_root = vim.fn.system("git -C " .. buf_dir .. " rev-parse --show-toplevel 2>/dev/null")
 	
