@@ -32,34 +32,34 @@ if ok_ts then
 	})
 end
 
-vim.keymap.set("x", "an", function()
-	vim.treesitter.start()
-	if vim.treesitter.get_parser() then
-		require("vim.treesitter._select").select_parent(vim.v.count1)
-	else
-		vim.lsp.buf.selection_range(vim.v.count1)
-	end
-end, { desc = "Select parent treesitter node" })
-
-vim.keymap.set("x", "in", function()
-	vim.treesitter.start()
-	if vim.treesitter.get_parser() then
-		require("vim.treesitter._select").select_child(vim.v.count1)
-	else
-		vim.lsp.buf.selection_range(-vim.v.count1)
-	end
-end, { desc = "Select child treesitter node" })
-
-vim.keymap.set({ "x", "o" }, "[n", function()
-	vim.treesitter.start()
-	require("vim.treesitter._select").select_prev(vim.v.count1)
-end, { desc = "Select previous treesitter node" })
-
-vim.keymap.set({ "x", "o" }, "]n", function()
-	vim.treesitter.start()
-	require("vim.treesitter._select").select_next(vim.v.count1)
-end, { desc = "Select next treesitter node" })
-
+-- vim.keymap.set("x", "an", function()
+-- 	vim.treesitter.start()
+-- 	if vim.treesitter.get_parser() then
+-- 		require("vim.treesitter._select").select_parent(vim.v.count1)
+-- 	else
+-- 		vim.lsp.buf.selection_range(vim.v.count1)
+-- 	end
+-- end, { desc = "Select parent treesitter node" })
+--
+-- vim.keymap.set("x", "in", function()
+-- 	vim.treesitter.start()
+-- 	if vim.treesitter.get_parser() then
+-- 		require("vim.treesitter._select").select_child(vim.v.count1)
+-- 	else
+-- 		vim.lsp.buf.selection_range(-vim.v.count1)
+-- 	end
+-- end, { desc = "Select child treesitter node" })
+--
+-- vim.keymap.set({ "x", "o" }, "[n", function()
+-- 	vim.treesitter.start()
+-- 	require("vim.treesitter._select").select_prev(vim.v.count1)
+-- end, { desc = "Select previous treesitter node" })
+--
+-- vim.keymap.set({ "x", "o" }, "]n", function()
+-- 	vim.treesitter.start()
+-- 	require("vim.treesitter._select").select_next(vim.v.count1)
+-- end, { desc = "Select next treesitter node" })
+--
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = {
 		"lua",

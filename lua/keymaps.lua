@@ -413,3 +413,31 @@ vim.keymap.set("i", "<C-l>", 'copilot#Accept("\\<CR>")', {
 	replace_keycodes = false,
 	desc = "Copilot accept suggestion (alt)",
 })
+
+-- =============================================================================
+-- Tree-sitter Text Objects (Neovim 0.12+)
+-- =============================================================================
+-- <A-o>  expand selection to parent node (with LSP fallback)
+-- <A-i>  shrink selection to child node  (with LSP fallback)
+-- On macOS, Alt+o sends "ø" and Alt+i sends "ı" — map both to be safe.
+local function ts_parent()
+	local parser = vim.treesitter.get_parser(nil, nil, { error = false })
+	if parser then
+		require("vim.treesitter._select").select_parent(vim.v.count1)
+	else
+		vim.lsp.buf.selection_range(vim.v.count1)
+	end
+end
+local function ts_child()
+	if vim.treesitter.get_parser(nil, nil, { error = false }) then
+		require("vim.treesitter._select").select_child(vim.v.count1)
+	else
+		vim.lsp.buf.selection_range(-vim.v.count1)
+	end
+end
+
+vim.keymap.set({ "n", "x", "o" }, "<A-o>", ts_parent, { desc = "Select parent treesitter node" })
+vim.keymap.set({ "n", "x", "o" }, "ø",     ts_parent, { desc = "Select parent treesitter node (macOS Alt+o)" })
+vim.keymap.set({ "n", "x", "o" }, "<A-i>", ts_child, { desc = "Select child treesitter node" })
+vim.keymap.set({ "n", "x", "o" }, "ı",     ts_child, { desc = "Select child treesitter node (macOS Alt+i)" })
+vim.keymap.set({ "n", "x", "o" }, "ˆ",     ts_child, { desc = "Select child treesitter node (macOS Alt+i fallback)" })
