@@ -137,7 +137,7 @@ vim.pack.add({
 -- -----------------------------------------------------------------------------
 -- Tools
 -- -----------------------------------------------------------------------------
-	vim.pack.add({
+vim.pack.add({
 	"https://github.com/stevearc/conform.nvim",
 	"https://github.com/akinsho/toggleterm.nvim",
 	"https://github.com/github/copilot.vim",
