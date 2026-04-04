@@ -137,16 +137,14 @@ vim.pack.add({
 -- -----------------------------------------------------------------------------
 -- Tools
 -- -----------------------------------------------------------------------------
-vim.pack.add({
+	vim.pack.add({
 	"https://github.com/stevearc/conform.nvim",
 	"https://github.com/akinsho/toggleterm.nvim",
-	"https://github.com/viniciusteixeiradias/kanban.nvim",
 	"https://github.com/github/copilot.vim",
 	"https://github.com/numToStr/Comment.nvim",
 	"https://github.com/lewis6991/gitsigns.nvim",
 	"https://github.com/NeogitOrg/neogit",
 	"https://github.com/nvim-lua/plenary.nvim",
-	"https://github.com/chomosuke/typst-preview.nvim",
 	"https://github.com/dangooddd/pyrepl.nvim",
 })
 
