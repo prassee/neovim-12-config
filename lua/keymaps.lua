@@ -5,7 +5,10 @@
 --   <leader>b  = Buffers
 --   <leader>f  = Find (fzf-lua search)
 --   <leader>g  = Git (gitsigns + fzf git)
+--   <leader>j  = PyREPL
 --   <leader>l  = LSP actions
+--   <leader>m  = Agentic
+--   <leader>n  = Neogit
 --   <leader>p  = Plugins (Mason, Pack)
 --   <leader>t  = Terminal / Tools
 --   <leader>w  = Window management
@@ -191,8 +194,8 @@ local lsp_action_maps = {
 	{ "ln", vim.lsp.buf.rename, "Rename symbol" },
 	{ "lh", vim.lsp.buf.hover, "Hover documentation" },
 	{ "lf", format_buffer, "Format buffer" },
-	{ "lr", vim.lsp.codelens.run, "Run codelens" },
-	{ "lR", vim.lsp.codelens.refresh, "Refresh codelens" },
+	{ "lc", vim.lsp.codelens.run, "Run codelens" },
+	{ "lC", vim.lsp.codelens.refresh, "Refresh codelens" },
 }
 for _, km in ipairs(lsp_action_maps) do
 	map("n", "<leader>" .. km[1], km[2], { desc = km[3] })
