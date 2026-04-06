@@ -24,19 +24,19 @@
 
 **Core:** nvim-treesitter, nvim-lspconfig, blink.cmp, LuaSnip, friendly-snippets, mini.clue, mini.surround
 
-**LSP & Mason:** mason.nvim, mason-lspconfig.nvim, mason-tool-installer.nvim, SchemaStore.nvim
+**LSP & Mason:** mason.nvim, mason-lspconfig.nvim, SchemaStore.nvim
 
-**UI:** catppuccin (colorscheme), lualine.nvim
+**UI:** tokyonight.nvim, lualine.nvim, render-markdown.nvim
 
 **File & Search:** oil.nvim, fzf-lua
 
-**AI:** opencode.nvim (AI coding assistant), copilot.vim
+**AI:** agentic.nvim, copilot.vim
 
-**Tools:** conform.nvim, toggleterm.nvim, kanban.nvim, Comment.nvim, gitsigns.nvim, typst-preview.nvim
+**Tools:** conform.nvim, toggleterm.nvim, Comment.nvim, gitsigns.nvim, neogit, pyrepl.nvim
 
 ## LSP Support
 
-Lua, Go, Python (pyrefly), Docker, TOML, JSON, Markdown, YAML, Typst
+Lua, Go, Python (pyrefly), Docker, TOML, JSON, Markdown, YAML
 
 ## Keymap Prefixes
 
@@ -46,10 +46,12 @@ Lua, Go, Python (pyrefly), Docker, TOML, JSON, Markdown, YAML, Typst
 | `<leader>f` | Find (fzf-lua) |
 | `<leader>g` | Git |
 | `<leader>l` | LSP actions |
-| `<leader>o` | OpenCode AI |
+| `<leader>j` | PyREPL |
+| `<leader>n` | Neogit |
 | `<leader>p` | Plugins |
 | `<leader>t` | Terminal |
 | `<leader>w` | Window management |
+| `<leader>x` | Agentic |
 
 ## Tags
 
