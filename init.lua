@@ -120,8 +120,9 @@ vim.pack.add({
 -- UI Plugins
 -- -----------------------------------------------------------------------------
 vim.pack.add({
-	"https://github.com/catppuccin/nvim",
+	"https://github.com/folke/tokyonight.nvim",
 	"https://github.com/nvim-lualine/lualine.nvim",
+	"https://github.com/MeanderingProgrammer/render-markdown.nvim",
 })
 
 -- -----------------------------------------------------------------------------
@@ -154,14 +155,7 @@ require("plugins")
 -- =============================================================================
 -- SECTION 4: AUTOCOMMANDS
 -- =============================================================================
-
-vim.api.nvim_create_autocmd("TextYankPost", {
-	desc = "Highlight when yanking (copying) text",
-	group = vim.api.nvim_create_augroup("highlight-yank", { clear = true }),
-	callback = function()
-		vim.highlight.on_yank()
-	end,
-})
+require("autocmds")
 
 -- =============================================================================
 -- SECTION 5: KEYMAPS

@@ -25,7 +25,6 @@ local thoth = Terminal:new({ cmd = "thoth", direction = "float", hidden = true }
 -- Helper Functions
 -- =============================================================================
 
--- Keymap helper to reduce boilerplate
 local function map(mode, lhs, rhs, opts)
 	opts = opts or {}
 	if not opts.desc then
@@ -34,72 +33,17 @@ local function map(mode, lhs, rhs, opts)
 	vim.keymap.set(mode, lhs, rhs, opts)
 end
 
--- Format buffer
 local function format_buffer()
 	require("conform").format()
 end
 
--- Terminal toggles
 local function toggle_thoth()
 	thoth:toggle()
 end
 
 -- =============================================================================
--- Git: AI Commit Message
+-- General: Saving & Quitting
 -- =============================================================================
-
-local function opencode_ai_commit()
-	local buf_name = vim.api.nvim_buf_get_name(0)
-	local buf_dir = vim.fn.fnamemodify(buf_name, ":p:h")
-	if buf_dir == "" then
-		buf_dir = vim.fn.getcwd()
-	end
-
-	local git_root = vim.fn.system("git -C " .. buf_dir .. " rev-parse --show-toplevel 2>/dev/null")
-
-	if git_root == "" or git_root:match("^fatal") then
-		git_root = vim.fn.getcwd()
-	end
-	git_root = git_root:gsub("%s+", "")
-
-	local diff_output = vim.fn.system("git --git-dir=" .. git_root .. "/.git --work-tree=" .. git_root .. " diff --cached 2>/dev/null")
-
-	if diff_output == "" or diff_output:match("no changes added") then
-		print("Error: No staged changes. Stage files with git add first.")
-		return
-	end
-
-	local prompt = "Given this git diff, write a concise one-line commit message. OUTPUT ONLY TEXT, no quotes:\n\n" .. diff_output
-
-	local cmd = string.format(
-		[[echo '%s' | opencode run - -m opencode/minimax-m2.5-free --format json | jq -rn 'inputs | select(.type == "text") | .part.text']],
-		prompt:gsub("'", "'\\''")
-	)
-
-	print("Generating AI commit message...")
-
-	local msg = vim.fn.system(cmd):gsub("[\n\r]", "")
-
-	if msg ~= "" and msg ~= "null" and #msg > 0 then
-		local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
-		vim.api.nvim_buf_set_lines(0, 0, #lines, false, { msg })
-		vim.api.nvim_buf_set_lines(0, 1, #lines + 1, false, {})
-	else
-		print("Error: Could not generate message.")
-	end
-end
-
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = { "NeogitCommitMessage", "gitcommit" },
-	callback = function()
-		vim.keymap.set({ "n", "i" }, "S", ":wq<CR>", { buffer = true, silent = true, desc = "Save and close" })
-		vim.keymap.set("n", "Q", ":bd!<CR>", { buffer = true, silent = true, desc = "Abort commit" })
-		vim.keymap.set({ "n", "i" }, "G", function()
-			opencode_ai_commit()
-		end, { buffer = true, desc = "Generate commit message with OpenCode AI" })
-	end,
-	desc = "Setup commit message generation with OpenCode AI",
-})
 
 -- =============================================================================
 -- General: Saving & Quitting
@@ -252,7 +196,13 @@ local lsp_action_maps = {
 	{ "lh", vim.lsp.buf.hover, "Hover documentation" },
 	{ "lf", format_buffer, "Format buffer" },
 	{ "lc", vim.lsp.codelens.run, "Run codelens" },
-	{ "lC", vim.lsp.codelens.refresh, "Refresh codelens" },
+	{
+		"lC",
+		function()
+			vim.lsp.codelens.refresh({ bufnr = 0 })
+		end,
+		"Refresh codelens",
+	},
 }
 for _, km in ipairs(lsp_action_maps) do
 	map("n", "<leader>" .. km[1], km[2], { desc = km[3] })
@@ -267,8 +217,12 @@ for _, km in ipairs(lsp_diag_maps) do
 	map("n", "<leader>" .. km[1], km[2], { desc = km[3] })
 end
 
-map("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
-map("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
+map("n", "]d", function()
+	vim.diagnostic.jump({ direction = 1 })
+end, { desc = "Next diagnostic" })
+map("n", "[d", function()
+	vim.diagnostic.jump({ direction = -1 })
+end, { desc = "Previous diagnostic" })
 
 -- =============================================================================
 -- Window: <leader>w
@@ -451,12 +405,8 @@ for _, km in ipairs(agentic_maps) do
 	local modes = km[1]
 	local lhs = "<leader>" .. km[2]
 	local rhs = km[3]
-	local opts = km[4]
-	if type(opts) == "string" then
-		opts = { desc = opts }
-	else
-		opts.desc = opts.desc or "Agentic"
-	end
+	local opts = type(km[4]) == "string" and { desc = km[4] }
+		or vim.tbl_extend("keep", km[4] or {}, { desc = "Agentic" })
 	map(modes, lhs, rhs, opts)
 end
 
@@ -497,7 +447,7 @@ local function ts_child()
 end
 
 vim.keymap.set({ "n", "x", "o" }, "<A-o>", ts_parent, { desc = "Select parent treesitter node" })
-vim.keymap.set({ "n", "x", "o" }, "ø",     ts_parent, { desc = "Select parent treesitter node (macOS Alt+o)" })
+vim.keymap.set({ "n", "x", "o" }, "ø", ts_parent, { desc = "Select parent treesitter node (macOS Alt+o)" })
 vim.keymap.set({ "n", "x", "o" }, "<A-i>", ts_child, { desc = "Select child treesitter node" })
-vim.keymap.set({ "n", "x", "o" }, "ı",     ts_child, { desc = "Select child treesitter node (macOS Alt+i)" })
-vim.keymap.set({ "n", "x", "o" }, "ˆ",     ts_child, { desc = "Select child treesitter node (macOS Alt+i fallback)" })
+vim.keymap.set({ "n", "x", "o" }, "ı", ts_child, { desc = "Select child treesitter node (macOS Alt+i)" })
+vim.keymap.set({ "n", "x", "o" }, "ˆ", ts_child, { desc = "Select child treesitter node (macOS Alt+i fallback)" })
