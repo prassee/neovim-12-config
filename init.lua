@@ -98,7 +98,7 @@ end, {
 vim.pack.add({
 	"https://github.com/nvim-treesitter/nvim-treesitter",
 	"https://github.com/neovim/nvim-lspconfig",
-  "https://github.com/Saghen/blink.lib",
+	"https://github.com/Saghen/blink.lib",
 	"https://github.com/Saghen/blink.cmp",
 	"https://github.com/L3MON4D3/LuaSnip",
 	"https://github.com/rafamadriz/friendly-snippets",
@@ -145,6 +145,7 @@ vim.pack.add({
 	"https://github.com/nvim-lua/plenary.nvim",
 	"https://github.com/NeogitOrg/neogit",
 	"https://github.com/dangooddd/pyrepl.nvim",
+	"https://github.com/ankushbhagats/match.nvim",
 })
 
 -- =============================================================================

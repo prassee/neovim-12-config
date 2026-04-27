@@ -30,7 +30,7 @@ if ok_ts then
 		highlight = { enable = true, additional_vim_regex_highlighting = false },
 		indent = { enable = true },
 	})
-	end
+end
 
 -- -----------------------------------------------------------------------------
 -- Snippets (LuaSnip + friendly-snippets)
@@ -460,3 +460,8 @@ require("render-markdown").setup({
 	file_types = { "markdown", "md", "AgenticChat" },
 	latex = { enabled = false },
 })
+
+-- -----------------------------------------------------------------------------
+-- Search & Replace
+-- -----------------------------------------------------------------------------
+require("match").setup({})
