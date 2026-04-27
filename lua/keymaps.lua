@@ -67,6 +67,8 @@ local line_nav = {
 	{ "n", "<leader>e", "$", "Go to line end" },
 	{ "i", "<C-a>", "<C-o>^", "Go to line start" },
 	{ "i", "<C-e>", "<End>", "Go to line end" },
+	{ "v", "<leader>e", "$", "Go to line end" },
+	{ "v", "<leader>a", "^", "Go to line start" },
 }
 for _, km in ipairs(line_nav) do
 	map(km[1], km[2], km[3], { desc = km[4] })
