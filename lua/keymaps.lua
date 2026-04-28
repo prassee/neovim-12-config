@@ -427,9 +427,9 @@ vim.keymap.set("i", "<C-l>", 'copilot#Accept("\\<CR>")', {
 })
 
 -- =============================================================================
--- Search & Replace (mini.search)
+-- Search & Replace (match.nvim)
 -- =============================================================================
-map("n", "<leader>sr", ":Match<CR>", { desc = "Search and replace" })
+map("n", "<leader>rs", ":Match<CR>", { desc = "Search and replace" })
 
 -- =============================================================================
 -- Tree-sitter Text Objects (Neovim 0.12+)
