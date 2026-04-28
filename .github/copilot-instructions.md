@@ -25,6 +25,11 @@ This is a Neovim 0.12+ configuration using `vim.pack` (built-in package manageme
 | match.nvim | Search and replace |
 | mini.clue/surround | Surround text and key hints |
 | oil.nvim | File explorer |
+| neogit | Git interface |
+| gitsigns.nvim | Git signs |
+| render-markdown.nvim | Markdown rendering |
+| tokyonight.nvim | Colorscheme |
+| lualine.nvim | Statusline |
 
 ## LSP Servers
 

@@ -24,7 +24,6 @@ if ok_ts then
 			"bash",
 			"rust",
 			"typescript",
-			"rust",
 			"dockerfile",
 		},
 		highlight = { enable = true, additional_vim_regex_highlighting = false },
