@@ -52,9 +52,9 @@ end
 vim.lsp.enable({ "lua_ls", "gopls", "pyrefly", "dockerls", "taplo", "jsonls", "marksman", "yamlls" })
 vim.lsp.inlay_hint.enable(true)
 
-vim.lsp.codelens.display = function(_, lenses, ctx)
+vim.lsp.codelens.display = function(lenses, bufnr, client_id)
 	local buf = ctx.bufnr
-	vim.api.nvim_buf_clear_namespace(buf, vim.lsp.codelens.ns, 0, -1)
+	vim.api.nvim_buf_clear_namespace(bufnr, vim.lsp.codelens.ns, 0, -1)
 	if #lenses == 0 then
 		return
 	end
