@@ -52,53 +52,6 @@ end
 vim.lsp.enable({ "lua_ls", "gopls", "pyrefly", "dockerls", "taplo", "jsonls", "marksman", "yamlls" })
 vim.lsp.inlay_hint.enable(true)
 
-vim.lsp.codelens.display = function(lenses, bufnr, client_id)
-	vim.api.nvim_buf_clear_namespace(bufnr, vim.lsp.codelens.ns, 0, -1)
-	if #lenses == 0 then
-		return
-	end
-
-	local lines = {}
-	for i, lens in ipairs(lenses) do
-		local lens_line = string.format("%d. %s: %s", i, lens.command.title, lens.command.command)
-		table.insert(lines, lens_line)
-	end
-
-	local term_buf = vim.api.nvim_create_buf(false, true)
-	vim.api.nvim_buf_set_lines(term_buf, 0, -1, false, lines)
-	vim.api.nvim_buf_set_option(term_buf, "filetype", "codelens")
-
-	local win = vim.api.nvim_open_win(term_buf, true, {
-		relative = "cursor",
-		width = math.max(60, vim.o.columns / 2),
-		height = math.min(#lines + 2, vim.o.lines / 2),
-		row = 1,
-		col = 0,
-		style = "minimal",
-		border = "rounded",
-	})
-
-	vim.keymap.set("n", "<CR>", function()
-		local cursor_line = vim.fn.line(".")
-		local lens_idx = cursor_line
-		if lenses[lens_idx] and lenses[lens_idx].command then
-			vim.lsp.buf.execute_command(lenses[lens_idx].command)
-		end
-		pcall(vim.api.nvim_win_close, win, true)
-	end, { buffer = term_buf })
-
-	vim.keymap.set("n", "q", function()
-		pcall(vim.api.nvim_win_close, win, true)
-	end, { buffer = term_buf })
-
-	vim.api.nvim_create_autocmd("BufLeave", {
-		buffer = term_buf,
-		callback = function()
-			pcall(vim.api.nvim_win_close, win, true)
-		end,
-		once = true,
-	})
-end
 vim.lsp.codelens.enable()
 
 -- -----------------------------------------------------------------------------
