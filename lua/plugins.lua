@@ -464,3 +464,7 @@ require("render-markdown").setup({
 -- Search & Replace
 -- -----------------------------------------------------------------------------
 require("match").setup({})
+
+---@type GitlabSettings
+local opts = {} -- Your configuration
+require("gitlab").setup(opts)
