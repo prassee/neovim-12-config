@@ -53,7 +53,6 @@ vim.lsp.enable({ "lua_ls", "gopls", "pyrefly", "dockerls", "taplo", "jsonls", "m
 vim.lsp.inlay_hint.enable(true)
 
 vim.lsp.codelens.display = function(lenses, bufnr, client_id)
-	local buf = ctx.bufnr
 	vim.api.nvim_buf_clear_namespace(bufnr, vim.lsp.codelens.ns, 0, -1)
 	if #lenses == 0 then
 		return
@@ -430,7 +429,7 @@ require("pyrepl").setup({
 -- ------
 require("agentic").setup({
 	-- agentic.setup expects the config table directly (not an `opts` wrapper).
-	provider = "opencode-acp",
+	provider = "claude-agent-acp",
 	windows = {
 		position = "right",
 		width = "40%",
